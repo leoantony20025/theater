@@ -148,8 +148,8 @@ class _PlayTVState extends State<PlayTV> {
                         duration: const Duration(milliseconds: 300),
                         padding: const EdgeInsets.only(left: 10, right: 20),
                         alignment: Alignment.center,
-                        child:
-                            Image(image: NetworkImage(widget.content['photo'])),
+                        child: CachedNetworkImage(
+                            imageUrl: widget.content['photo']),
                       ),
                       const SizedBox(
                         width: 50,
