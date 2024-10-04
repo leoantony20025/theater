@@ -7,6 +7,7 @@ import 'package:theater/AppColors.dart';
 import 'package:theater/models/Movie.dart';
 import 'package:theater/prefs.dart';
 import 'package:theater/screens/Play.dart';
+import 'package:theater/screens/PlayTV.dart';
 import 'package:theater/services/appService.dart';
 
 class HorizontalScrollList extends StatefulWidget {
@@ -51,20 +52,50 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
       widget.setIsLoading(true);
       Map<String, dynamic> content = await fetchMovieContent(movie.url);
       widget.setIsLoading(false);
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Play(
-          content: {
-            'name': movie.name,
-            'desc': movie.description,
-            'photo': movie.photo,
-            'url': movie.url,
-            'year': movie.year,
-            'duration': movie.duration,
-            'language': movie.language,
-            ...content
-          },
-        ),
-      ));
+      if (isDesktop) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => defaultTargetPlatform == TargetPlatform.android
+              ? PlayTV(
+                  content: {
+                    'name': movie.name,
+                    'desc': movie.description,
+                    'photo': movie.photo,
+                    'url': movie.url,
+                    'year': movie.year,
+                    'duration': movie.duration,
+                    'language': movie.language,
+                    ...content
+                  },
+                )
+              : Play(
+                  content: {
+                    'name': movie.name,
+                    'desc': movie.description,
+                    'photo': movie.photo,
+                    'url': movie.url,
+                    'year': movie.year,
+                    'duration': movie.duration,
+                    'language': movie.language,
+                    ...content
+                  },
+                ),
+        ));
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Play(
+            content: {
+              'name': movie.name,
+              'desc': movie.description,
+              'photo': movie.photo,
+              'url': movie.url,
+              'year': movie.year,
+              'duration': movie.duration,
+              'language': movie.language,
+              ...content
+            },
+          ),
+        ));
+      }
     }
 
     return SingleChildScrollView(

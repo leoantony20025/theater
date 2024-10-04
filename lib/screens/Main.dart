@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:theater/AppColors.dart';
@@ -7,6 +8,7 @@ import 'package:theater/screens/Home.dart';
 import 'package:theater/screens/Options.dart';
 import 'package:theater/screens/Search.dart';
 import 'package:theater/screens/WatchList.dart';
+import 'package:theater/screens/WatchListTV.dart';
 
 class Main extends StatefulWidget {
   const Main({super.key});
@@ -70,13 +72,20 @@ class _MainState extends State<Main> {
         "activeIcon": HugeIcons.strokeRoundedLanguageSkill,
       }
     ];
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isTV =
+        screenWidth > 800 && defaultTargetPlatform == TargetPlatform.android;
 
     Widget content = Expanded(
       child: Stack(
         children: [
           currentIndex == 0 ? const HomeScreen() : const SizedBox(),
           currentIndex == 1 ? const SearchScreen() : const SizedBox(),
-          currentIndex == 2 ? const WatchList() : const SizedBox(),
+          currentIndex == 2
+              ? isTV
+                  ? const WatchListTV()
+                  : const WatchList()
+              : const SizedBox(),
           currentIndex == 3 ? const Options() : const SizedBox(),
         ],
       ),

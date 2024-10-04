@@ -148,9 +148,9 @@ class _PlayState extends State<Play> {
                   const SizedBox(
                     height: 50,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Wrap(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Container(
                           // width: MediaQuery.of(context).size.width,

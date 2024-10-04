@@ -235,6 +235,38 @@ Future fetchSeriesContent(String url) async {
   }
 }
 
+Future<List<Movie?>> fetchSearchContents(String word) async {
+  String url = '$baseUrl/?s=$word&tr_post_type=1';
+  final res = await dio.get(url);
+
+  var document = HtmlParser(res.data).parse();
+  var ul = document.querySelector('.MovieList');
+  var lis = ul?.querySelectorAll('li');
+  List<Movie> movies = [];
+
+  for (var li in lis!) {
+    var desc = li.querySelector('.Description p')?.text.split(',') ?? [""];
+    desc.removeAt(0);
+    var movie = Movie(
+        name: li.querySelector('.Title')?.text.split('(')[0] ?? "",
+        description: desc.join(),
+        photo: li
+                .querySelector('.attachment-thumbnail')
+                ?.attributes['src']
+                .toString() ??
+            noImage,
+        language: "Tamil",
+        url: li.querySelector('a')?.attributes['href'].toString() ?? "",
+        duration: li.querySelector('.Time')?.text ?? "",
+        year:
+            li.querySelector('.Title')?.text.split('(')[1].split(')')[0] ?? "",
+        isMovie: true);
+    movies.add(movie);
+  }
+
+  return movies;
+}
+
 String? extractJsVariable(String html, String variableName) {
   // Regular expression to match a specific variable assignment
   final regex = RegExp('$variableName\\s*=\\s*[\'"]([^\'"]*)[\'"]');

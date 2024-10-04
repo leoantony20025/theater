@@ -16,8 +16,8 @@ class _LanguageState extends State<Language> {
 
   @override
   void initState() {
+    list1FocusNodes = List.generate(6, (index) => FocusNode());
     super.initState();
-    list1FocusNodes = List.generate(50, (index) => FocusNode());
   }
 
   @override
@@ -30,10 +30,8 @@ class _LanguageState extends State<Language> {
 
   @override
   Widget build(BuildContext context) {
-    // int? lang = prefs.getInt("lang") ?? 1;
     final appProvider = Provider.of<AppProvider>(context);
     int? lang = appProvider.lang;
-
     List languages = [
       {
         "name": "Tamil",
@@ -60,7 +58,7 @@ class _LanguageState extends State<Language> {
         "path": "/category/telugu-movies"
       },
       {
-        "name": "kannada",
+        "name": "Kannada",
         "isSelected": lang == 5,
         "value": 5,
         "path": "/category/kannada-movies"
@@ -72,49 +70,60 @@ class _LanguageState extends State<Language> {
         "path": "/category/hindi-movies"
       }
     ];
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            alignment: Alignment.topLeft,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color.fromARGB(255, 23, 0, 28), Colors.black])),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 20,
+      body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          alignment: Alignment.topCenter,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: isDesktop ? Alignment.centerLeft : Alignment.topCenter,
+                  end: isDesktop
+                      ? Alignment.centerRight
+                      : Alignment.bottomCenter,
+                  colors: const [
+                Color.fromARGB(255, 17, 0, 17),
+                Colors.black
+              ])),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Choose Language",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const Text(
-                    "Choose Language",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Column(
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                FocusTraversalGroup(
+                  policy: ReadingOrderTraversalPolicy(),
+                  child: Wrap(
+                    spacing: 20,
                     children: languages.map((e) {
                       int index = languages.indexOf(e);
                       return Focus(
                         focusNode: list1FocusNodes[index],
+                        onFocusChange: (value) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
                         onKeyEvent: (node, event) {
                           if (event.logicalKey == LogicalKeyboardKey.select ||
                               event.logicalKey == LogicalKeyboardKey.enter) {
-                            if (!e['isSelected']) {
-                              appProvider.updateLang(e['value']);
-                            }
+                            list1FocusNodes[index].requestFocus();
+                            appProvider.updateLang(e['value']);
+                            Navigator.pushNamed(context, '/main');
                             setState(() {});
                             return KeyEventResult.handled;
                           }
@@ -122,24 +131,22 @@ class _LanguageState extends State<Language> {
                         },
                         child: InkWell(
                           onTap: () {
-                            if (!e['isSelected']) {
-                              appProvider.updateLang(e['value']);
-                              Navigator.pushNamed(context, "/main");
-                            }
+                            list1FocusNodes[index].requestFocus();
+                            appProvider.updateLang(e['value']);
+                            Navigator.pushNamed(context, '/main');
+                            setState(() {});
                           },
                           child: Container(
-                            height: 110,
+                            width: isDesktop
+                                ? MediaQuery.of(context).size.width - 100
+                                : MediaQuery.of(context).size.width - 40,
+                            height: 120,
                             margin: const EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                border: list1FocusNodes[index].hasFocus
-                                    ? Border.all(
-                                        color: AppColors.borderTV, width: 2)
-                                    : Border.all(
-                                        width: 0, color: Colors.transparent),
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(10)),
-                                gradient: e['isSelected']
+                                gradient: list1FocusNodes[index].hasFocus
                                     ? const LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomCenter,
@@ -157,7 +164,7 @@ class _LanguageState extends State<Language> {
                             child: Text(
                               e['name'],
                               style: TextStyle(
-                                color: e['isSelected']
+                                color: list1FocusNodes[index].hasFocus
                                     ? Colors.white
                                     : const Color.fromARGB(140, 182, 144, 247),
                                 fontSize: 22,
@@ -169,52 +176,10 @@ class _LanguageState extends State<Language> {
                       );
                     }).toList(),
                   ),
-                  // Focus(
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       appProvider.updateLang(lang!);
-                  //       Navigator.pushNamed(context, "/main");
-                  //     },
-                  //     child: Container(
-                  //       width: MediaQuery.of(context).size.width,
-                  //       alignment: Alignment.centerRight,
-                  //       child: Container(
-                  //         width: 120,
-                  //         height: 50,
-                  //         alignment: Alignment.center,
-                  //         margin: const EdgeInsets.symmetric(vertical: 10),
-                  //         decoration: const BoxDecoration(
-                  //             borderRadius:
-                  //                 BorderRadius.all(Radius.circular(10)),
-                  //             boxShadow: [
-                  //               BoxShadow(
-                  //                   blurRadius: 30,
-                  //                   color: Color.fromARGB(61, 185, 0, 222),
-                  //                   offset: Offset(5, 10))
-                  //             ],
-                  //             gradient: LinearGradient(
-                  //                 begin: Alignment.topLeft,
-                  //                 end: Alignment.bottomCenter,
-                  //                 colors: [
-                  //                   Color.fromARGB(255, 86, 2, 101),
-                  //                   Color.fromARGB(255, 66, 0, 75)
-                  //                 ])),
-                  //         child: const Text(
-                  //           'Start Now',
-                  //           style: TextStyle(
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w500,
-                  //             color: Colors.white,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // )
-                ],
-              ),
-            )),
-      ),
+                ),
+              ],
+            ),
+          )),
     );
   }
 }

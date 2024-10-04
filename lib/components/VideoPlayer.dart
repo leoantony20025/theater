@@ -1,3 +1,4 @@
+import 'dart:async'; // Import Timer
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class VideoPlayer extends StatefulWidget {
-  String url;
+  final String url;
   VideoPlayer({super.key, required this.url});
 
   @override
@@ -22,6 +23,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   bool isDragging = false;
   double dragValue = 0.0;
   bool isLoading = true;
+  Timer? _controlsTimer; // Timer for auto-hide controls
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
       }
       if (!isDragging) setState(() {});
     });
+
     player.streams.duration.listen((_) {
       setState(() {});
     });
@@ -51,6 +54,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   void dispose() {
+    _controlsTimer?.cancel(); // Cancel the timer if it's running
     fnPlayer.dispose();
     player.dispose();
     super.dispose();
@@ -62,15 +66,18 @@ class _VideoPlayerState extends State<VideoPlayer> {
     } else {
       player.play();
     }
+    showControls(); // Ensure controls are shown when toggling play/pause
   }
 
-  void showControls() async {
+  void showControls() {
     setState(() {
       isShowControls = true;
     });
-    await Future.delayed(const Duration(seconds: 5));
-    setState(() {
-      isShowControls = false;
+    _controlsTimer?.cancel(); // Cancel any existing timer
+    _controlsTimer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        isShowControls = false; // Hide controls after 5 seconds
+      });
     });
   }
 
@@ -79,12 +86,14 @@ class _VideoPlayerState extends State<VideoPlayer> {
     if (newPosition > Duration.zero && newPosition < player.state.duration) {
       player.seek(newPosition);
     }
+    showControls(); // Show controls when seeking
   }
 
   void seekTo(double value) {
     final newPosition = Duration(
         milliseconds: (value * player.state.duration.inMilliseconds).toInt());
     player.seek(newPosition);
+    showControls(); // Show controls when seeking
   }
 
   @override
@@ -103,26 +112,21 @@ class _VideoPlayerState extends State<VideoPlayer> {
             if (event.logicalKey == LogicalKeyboardKey.select ||
                 event.logicalKey == LogicalKeyboardKey.enter) {
               togglePlayPause();
-              showControls();
               return KeyEventResult.handled;
             }
             if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
               seekBy(const Duration(seconds: -15)); // Seek backward
-              showControls();
               return KeyEventResult.handled;
             }
             if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
               seekBy(const Duration(seconds: 15)); // Seek forward
-              showControls();
               return KeyEventResult.handled;
             }
           }
           return KeyEventResult.ignored;
         },
         child: InkWell(
-          onTap: () {
-            showControls();
-          },
+          onTap: showControls,
           child: Stack(
             children: [
               // Video Player

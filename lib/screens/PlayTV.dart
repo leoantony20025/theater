@@ -149,6 +149,8 @@ class _PlayTVState extends State<PlayTV> {
                         padding: const EdgeInsets.only(left: 10, right: 20),
                         alignment: Alignment.center,
                         child: CachedNetworkImage(
+                            fadeInCurve: Curves.bounceIn,
+                            scale: 0.9,
                             imageUrl: widget.content['photo']),
                       ),
                       const SizedBox(

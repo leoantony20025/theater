@@ -26,7 +26,6 @@ class _OptionsState extends State<Options> {
     for (var node in list1FocusNodes) {
       node.dispose();
     }
-    super.dispose();
   }
 
   @override
