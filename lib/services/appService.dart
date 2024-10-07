@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:theater/models/Movie.dart';
+import 'package:html/dom.dart';
 
 final dio = Dio();
 String baseUrl = "https://bolly2tolly.land";
@@ -213,7 +216,7 @@ Future fetchSeriesContent(String url) async {
   var res = await dio.get(url);
   if (res.statusCode == 200) {
     var data = HtmlParser(res.data).parse();
-    var desc = data.querySelector('.Description p')?.text ?? [""];
+    var desc = data.querySelector('.Description p')?.text.trim() ?? [""];
     Iterable<Map<String, String?>> cast =
         data.querySelectorAll(".ListCast li").asMap().entries.map(
       (e) {
@@ -224,12 +227,30 @@ Future fetchSeriesContent(String url) async {
         };
       },
     );
+    var hasData = data.querySelectorAll("table tbody tr").length > 1;
+
+    print(hasData);
+
+    Iterable<Map<String, String?>> episodes =
+        data.querySelectorAll(".TPTblCn table tbody tr").asMap().entries.map(
+      (e) {
+        return {
+          "eno": e.value.querySelector(".Num")?.text ?? "",
+          "title": e.value.querySelector(".MvTbTtl a")?.text,
+          "photo": e.value.querySelector(".MvTbImg img")?.attributes['src'],
+          "url": e.value.querySelector(".MvTbPly a")?.attributes['href'],
+        };
+      },
+    );
+
     Map<String, dynamic> content = {
-      "poster": data.querySelector(".TPostBg img")?.attributes['src'],
       "description": desc,
       "cast": cast,
-      "isMovie": false
+      "hasData": hasData,
+      "episodes": episodes,
     };
+
+    // print("epiiiiiiiiiiiii" + content.toString());
 
     return content;
   }
@@ -276,4 +297,19 @@ String? extractJsVariable(String html, String variableName) {
     return match.group(1); // Extract the variable's value
   }
   return null;
+}
+
+List extractEpisodes(List<Element> tbody) {
+  var result = [];
+  tbody.asMap().entries.map(
+    (e) {
+      result.add({
+        "eno": e.value.querySelector(".Num")?.text,
+        "title": e.value.querySelector(".MvTbTtl a")?.text,
+        "photo": e.value.querySelector(".MvTbImg img")?.attributes['src'],
+        "url": e.value.querySelector(".MvTbPly a")?.attributes['href'],
+      });
+    },
+  );
+  return result;
 }
