@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:theater/AppColors.dart';
 import 'package:theater/components/GradientText.dart';
 import 'package:theater/models/Movie.dart';
@@ -33,6 +34,16 @@ class _WatchListTVState extends State<WatchListTV> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  moveLeft() {
+    scrollController.animateTo(scrollController.offset - 150,
+        curve: Curves.easeInOut, duration: const Duration(milliseconds: 300));
+  }
+
+  moveRight() {
+    scrollController.animateTo(scrollController.offset + 150,
+        curve: Curves.easeInOut, duration: const Duration(milliseconds: 300));
   }
 
   @override
@@ -323,20 +334,76 @@ class _WatchListTVState extends State<WatchListTV> {
                                                                   0,
                                                                   63)
                                                             ])),
-                                                    child: Material(
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              0, 0, 0, 0),
+                                                    child: Focus(
+                                                      onKeyEvent:
+                                                          (node, event) {
+                                                        if (event
+                                                            is KeyDownEvent) {
+                                                          // if (event.logicalKey == LogicalKeyboardKey.select ||
+                                                          //     event.logicalKey == LogicalKeyboardKey.enter) {
+                                                          //   return KeyEventResult.handled;
+                                                          // }
+                                                          if (event
+                                                                  .logicalKey ==
+                                                              LogicalKeyboardKey
+                                                                  .arrowLeft) {
+                                                            if (!scrollController
+                                                                .position
+                                                                .outOfRange) {
+                                                              moveLeft();
+                                                              focusNodes[
+                                                                      index - 1]
+                                                                  .requestFocus();
+                                                            }
+                                                            return KeyEventResult
+                                                                .handled;
+                                                          }
+                                                          if (event
+                                                                  .logicalKey ==
+                                                              LogicalKeyboardKey
+                                                                  .arrowRight) {
+                                                            if (!scrollController
+                                                                .position
+                                                                .outOfRange) {
+                                                              moveRight();
+                                                              focusNodes[
+                                                                      index + 1]
+                                                                  .requestFocus();
+                                                            }
+                                                            return KeyEventResult
+                                                                .handled;
+                                                          }
+                                                        }
+                                                        return KeyEventResult
+                                                            .ignored;
+                                                      },
                                                       child: InkWell(
                                                         key: const Key("watch"),
                                                         focusNode:
                                                             focusNodes[index],
                                                         autofocus: true,
                                                         onFocusChange: (value) {
-                                                          if (focusNodes[index]
-                                                              .hasFocus) {
-                                                            // scrollToSection(0);
-                                                          }
+                                                          // scrollToSection(
+                                                          //     scrollController
+                                                          //             .offset +
+                                                          //         30);
+                                                          // if (focusNodes[index]
+                                                          //     .hasFocus) {
+                                                          //   if (index == 0) {
+                                                          //     scrollToSection(
+                                                          //         0);
+                                                          //   }
+                                                          //   if (index ==
+                                                          //       watchlist
+                                                          //               .length -
+                                                          //           1) {
+                                                          //     scrollToSection(
+                                                          //         scrollController
+                                                          //                 .offset +
+                                                          //             30);
+                                                          //   }
+                                                          //   // scrollToSection(0);
+                                                          // }
                                                           setState(() {});
                                                         },
                                                         borderRadius:
@@ -397,6 +464,10 @@ class _WatchListTVState extends State<WatchListTV> {
                                                       onTap: () async {
                                                         await removeFromWatchhList(
                                                             movie);
+                                                        setState(() {
+                                                          watchlist =
+                                                              getWatchhList();
+                                                        });
                                                       },
                                                       child: Container(
                                                         padding:
