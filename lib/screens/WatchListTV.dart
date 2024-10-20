@@ -11,7 +11,8 @@ import 'package:theater/screens/Play.dart';
 import 'package:theater/screens/PlayTV.dart';
 import 'package:theater/services/appService.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:theater/utils/NoScrollBehavior.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class WatchListTV extends StatefulWidget {
   const WatchListTV({super.key});
@@ -27,6 +28,7 @@ class _WatchListTVState extends State<WatchListTV> {
   late FocusNode fnWatch;
   bool isLoading = false;
   final ScrollController scrollController = ScrollController();
+  var activeIndex = null;
 
   void scrollToSection(double offset) {
     scrollController.animateTo(
@@ -140,468 +142,564 @@ class _WatchListTVState extends State<WatchListTV> {
       child: Focus(
         skipTraversal: true,
         child: SingleChildScrollView(
-          child: Stack(children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "Watchlist",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                watchlist.isNotEmpty
-                    ? Stack(
-                        children: [
-                          ScrollConfiguration(
-                            behavior: NoScrollBehavior(),
-                            child: SingleChildScrollView(
-                              controller: scrollController,
-                              padding:
-                                  const EdgeInsets.only(bottom: 40, left: 20),
-                              scrollDirection: Axis.horizontal,
-                              child: FocusTraversalGroup(
-                                policy: OrderedTraversalPolicy(),
-                                child: Row(
-                                  children: watchlist.map((movie) {
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            child: watchlist.isNotEmpty
+                ? Stack(alignment: Alignment.topRight, children: [
+                    activeIndex != null
+                        ? CachedNetworkImage(
+                            imageUrl: watchlist[activeIndex].photo,
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: MediaQuery.of(context).size.height / 1.3,
+                            fit: BoxFit.fitWidth,
+                            // alignment: Alignment.topRight,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor:
+                                  const Color.fromARGB(71, 224, 224, 224),
+                              highlightColor:
+                                  const Color.fromARGB(70, 245, 245, 245),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 1.7,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 1.3,
+                      decoration: BoxDecoration(
+                          gradient: isDesktop
+                              ? const LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                      AppColors.bg2,
+                                      AppColors.bg2,
+                                      Color.fromARGB(27, 30, 0, 31),
+                                    ])
+                              : const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                      Color.fromARGB(162, 30, 0, 31),
+                                      Color.fromARGB(140, 52, 0, 56),
+                                      Color.fromARGB(193, 25, 0, 23),
+                                      AppColors.bg2
+                                    ])),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.height / 1.3,
+                      decoration: BoxDecoration(
+                          gradient: isDesktop
+                              ? const LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                      AppColors.bg2,
+                                      Color.fromARGB(217, 30, 0, 31),
+                                      Color.fromARGB(0, 30, 0, 31),
+                                    ])
+                              : const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                      Color.fromARGB(162, 30, 0, 31),
+                                      Color.fromARGB(140, 52, 0, 56),
+                                      Color.fromARGB(233, 25, 0, 23),
+                                      AppColors.bg2
+                                    ])),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 1.3 + 5,
+                      decoration: BoxDecoration(
+                          gradient: isDesktop
+                              ? const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                      Color.fromARGB(71, 17, 0, 17),
+                                      AppColors.bg2,
+                                    ])
+                              : const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                      Color.fromARGB(0, 17, 0, 17),
+                                      AppColors.bg2,
+                                    ])),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height - 380,
+                        ),
+                        // const Text(
+                        //   "Watchlist",
+                        //   style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 22,
+                        //     fontWeight: FontWeight.w500,
+                        //   ),
+                        // ),
+                        // const SizedBox(
+                        //   height: 30,
+                        // ),
 
-                                    int index = watchlist.indexOf(movie);
-                                    return AnimatedContainer(
-                                      duration: Duration(milliseconds: 300),
-                                      // width: focusNodes[index].hasFocus
-                                      //     ? (MediaQuery.of(context).size.width / 2)
-                                      //     : (MediaQuery.of(context).size.width / 3) -
-                                      //         50,
-                                      width:
-                                          (MediaQuery.of(context).size.width /
-                                                  3) -
-                                              50,
-                                      margin: EdgeInsets.only(
-                                          right: 40, left: index == 0 ? 20 : 0),
-                                      height: 400,
-                                      decoration: BoxDecoration(
-                                        boxShadow: focusNodes[index].hasFocus ||
-                                                fnRemove[index].hasFocus
-                                            ? [
-                                                const BoxShadow(
-                                                    color: Color.fromARGB(
-                                                        255, 36, 0, 36),
-                                                    blurRadius: 30,
-                                                    offset: Offset(4, 10))
-                                              ]
-                                            : [],
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(35)),
-                                        image: DecorationImage(
-                                            image: NetworkImage(movie.photo),
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.topCenter),
-                                      ),
-                                      child: AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        padding: const EdgeInsets.all(15),
-                                        alignment: Alignment.bottomCenter,
-                                        decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(35)),
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                                  Color.fromARGB(70, 66, 0, 97),
-                                                  Color.fromARGB(
-                                                      114, 19, 0, 21),
-                                                  Color.fromARGB(255, 19, 0, 21)
-                                                ])),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            SizedBox(
-                                              width: isDesktop ? 300 : 100,
-                                              child: Text(
-                                                movie.name,
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    overflow:
-                                                        TextOverflow.ellipsis),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  movie.language,
-                                                  style: const TextStyle(
-                                                      color: Color.fromARGB(
-                                                          73, 255, 255, 255),
-                                                      fontSize: 10),
-                                                ),
-                                                const SizedBox(
-                                                  width: 7,
-                                                ),
-                                                Text(
-                                                  movie.year,
-                                                  style: const TextStyle(
-                                                      color: Color.fromARGB(
-                                                          73, 255, 255, 255),
-                                                      fontSize: 10),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: focusNodes[index]
-                                                          .hasFocus ||
+                        Stack(
+                          children: [
+                            ScrollConfiguration(
+                              behavior: const MaterialScrollBehavior(),
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                padding:
+                                    const EdgeInsets.only(bottom: 40, left: 20),
+                                scrollDirection: Axis.horizontal,
+                                child: FocusTraversalGroup(
+                                  policy: OrderedTraversalPolicy(),
+                                  child: Row(
+                                    children: watchlist.map((movie) {
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                      // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+                                      int index = watchlist.indexOf(movie);
+                                      return AnimatedContainer(
+                                        duration: Duration(milliseconds: 300),
+                                        // width: focusNodes[index].hasFocus
+                                        //     ? (MediaQuery.of(context).size.width / 2)
+                                        //     : (MediaQuery.of(context).size.width / 3) -
+                                        //         50,
+                                        width:
+                                            (MediaQuery.of(context).size.width /
+                                                    3) -
+                                                50,
+                                        margin: EdgeInsets.only(
+                                            right: 40,
+                                            left: index == 0 ? 20 : 0),
+                                        height: 380,
+                                        decoration: BoxDecoration(
+                                          boxShadow:
+                                              focusNodes[index].hasFocus ||
                                                       fnRemove[index].hasFocus
-                                                  ? 130
-                                                  : 0,
-                                              child: Column(
+                                                  ? [
+                                                      const BoxShadow(
+                                                          color: Color.fromARGB(
+                                                              255, 36, 0, 36),
+                                                          blurRadius: 30,
+                                                          offset: Offset(4, 10))
+                                                    ]
+                                                  : [],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(35)),
+                                          image: DecorationImage(
+                                              image: NetworkImage(movie.photo),
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.topCenter),
+                                        ),
+                                        child: AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          padding: const EdgeInsets.all(15),
+                                          alignment: Alignment.bottomCenter,
+                                          decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(35)),
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color.fromARGB(
+                                                        70, 66, 0, 97),
+                                                    Color.fromARGB(
+                                                        114, 19, 0, 21),
+                                                    Color.fromARGB(
+                                                        255, 19, 0, 21)
+                                                  ])),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                width: isDesktop ? 300 : 100,
+                                                child: Text(
+                                                  movie.name,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                ),
+                                              ),
+                                              Row(
                                                 children: [
-                                                  AnimatedContainer(
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 10),
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                    decoration: BoxDecoration(
-                                                        border: focusNodes[
-                                                                    index]
-                                                                .hasFocus
-                                                            ? Border.all(
-                                                                color: AppColors
-                                                                    .borderTV,
-                                                                width: 2.0,
-                                                              )
-                                                            : Border.all(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 0.0,
-                                                              ),
-                                                        boxShadow:
-                                                            focusNodes[index]
-                                                                    .hasFocus
-                                                                ? [
-                                                                    const BoxShadow(
-                                                                        blurRadius:
-                                                                            50,
-                                                                        blurStyle:
-                                                                            BlurStyle
-                                                                                .normal,
-                                                                        spreadRadius:
-                                                                            2,
-                                                                        color: Color.fromARGB(
-                                                                            65,
-                                                                            222,
-                                                                            0,
-                                                                            238))
-                                                                  ]
-                                                                : [],
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(Radius
-                                                                    .circular(
-                                                                        25)),
-                                                        gradient:
-                                                            const LinearGradient(
-                                                                begin: Alignment
-                                                                    .topLeft,
-                                                                end: Alignment
-                                                                    .bottomRight,
-                                                                colors: [
-                                                              Color.fromARGB(
-                                                                  255,
-                                                                  158,
-                                                                  0,
-                                                                  164),
-                                                              Color.fromARGB(
-                                                                  255,
-                                                                  48,
-                                                                  0,
-                                                                  63)
-                                                            ])),
-                                                    child: Focus(
-                                                      onKeyEvent:
-                                                          (node, event) {
-                                                        if (event
-                                                            is KeyDownEvent) {
-                                                          // if (event.logicalKey == LogicalKeyboardKey.select ||
-                                                          //     event.logicalKey == LogicalKeyboardKey.enter) {
-                                                          //   return KeyEventResult.handled;
-                                                          // }
+                                                  Text(
+                                                    movie.language,
+                                                    style: const TextStyle(
+                                                        color: Color.fromARGB(
+                                                            73, 255, 255, 255),
+                                                        fontSize: 10),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 7,
+                                                  ),
+                                                  Text(
+                                                    movie.year,
+                                                    style: const TextStyle(
+                                                        color: Color.fromARGB(
+                                                            73, 255, 255, 255),
+                                                        fontSize: 10),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: focusNodes[index]
+                                                            .hasFocus ||
+                                                        fnRemove[index].hasFocus
+                                                    ? 130
+                                                    : 0,
+                                                child: Column(
+                                                  children: [
+                                                    AnimatedContainer(
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10),
+                                                      duration: const Duration(
+                                                          milliseconds: 300),
+                                                      decoration: BoxDecoration(
+                                                          border: focusNodes[
+                                                                      index]
+                                                                  .hasFocus
+                                                              ? Border.all(
+                                                                  color: AppColors
+                                                                      .borderTV,
+                                                                  width: 2.0,
+                                                                )
+                                                              : Border.all(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  width: 0.0,
+                                                                ),
+                                                          boxShadow:
+                                                              focusNodes[index]
+                                                                      .hasFocus
+                                                                  ? [
+                                                                      const BoxShadow(
+                                                                          blurRadius:
+                                                                              50,
+                                                                          blurStyle: BlurStyle
+                                                                              .normal,
+                                                                          spreadRadius:
+                                                                              2,
+                                                                          color: Color.fromARGB(
+                                                                              65,
+                                                                              222,
+                                                                              0,
+                                                                              238))
+                                                                    ]
+                                                                  : [],
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          25)),
+                                                          gradient: const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                              colors: [
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    158,
+                                                                    0,
+                                                                    164),
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    48,
+                                                                    0,
+                                                                    63)
+                                                              ])),
+                                                      child: Focus(
+                                                        onKeyEvent:
+                                                            (node, event) {
                                                           if (event
-                                                                  .logicalKey ==
-                                                              LogicalKeyboardKey
-                                                                  .arrowLeft) {
-                                                            if (!scrollController
-                                                                .position
-                                                                .outOfRange) {
+                                                              is KeyDownEvent) {
+                                                            // if (event.logicalKey == LogicalKeyboardKey.select ||
+                                                            //     event.logicalKey == LogicalKeyboardKey.enter) {
+                                                            //   return KeyEventResult.handled;
+                                                            // }
+                                                            if (event
+                                                                    .logicalKey ==
+                                                                LogicalKeyboardKey
+                                                                    .arrowLeft) {
+                                                              // if (!scrollController
+                                                              //     .position
+                                                              //     .outOfRange) {
                                                               moveLeft();
                                                               focusNodes[
                                                                       index - 1]
                                                                   .requestFocus();
+                                                              // }
+                                                              return KeyEventResult
+                                                                  .handled;
                                                             }
-                                                            return KeyEventResult
-                                                                .handled;
-                                                          }
-                                                          if (event
-                                                                  .logicalKey ==
-                                                              LogicalKeyboardKey
-                                                                  .arrowRight) {
-                                                            if (!scrollController
-                                                                .position
-                                                                .outOfRange) {
-                                                              moveRight();
-                                                              focusNodes[
-                                                                      index + 1]
-                                                                  .requestFocus();
+                                                            if (event
+                                                                    .logicalKey ==
+                                                                LogicalKeyboardKey
+                                                                    .arrowRight) {
+                                                              if (!scrollController
+                                                                  .position
+                                                                  .outOfRange) {
+                                                                moveRight();
+                                                                focusNodes[
+                                                                        index +
+                                                                            1]
+                                                                    .requestFocus();
+                                                              }
+                                                              return KeyEventResult
+                                                                  .handled;
                                                             }
-                                                            return KeyEventResult
-                                                                .handled;
                                                           }
-                                                        }
-                                                        return KeyEventResult
-                                                            .ignored;
-                                                      },
-                                                      child: InkWell(
-                                                        key: const Key("watch"),
-                                                        focusNode:
-                                                            focusNodes[index],
-                                                        autofocus: true,
-                                                        onFocusChange: (value) {
-                                                          // scrollToSection(
-                                                          //     scrollController
-                                                          //             .offset +
-                                                          //         30);
-                                                          // if (focusNodes[index]
-                                                          //     .hasFocus) {
-                                                          //   if (index == 0) {
-                                                          //     scrollToSection(
-                                                          //         0);
-                                                          //   }
-                                                          //   if (index ==
-                                                          //       watchlist
-                                                          //               .length -
-                                                          //           1) {
-                                                          //     scrollToSection(
-                                                          //         scrollController
-                                                          //                 .offset +
-                                                          //             30);
-                                                          //   }
-                                                          //   // scrollToSection(0);
-                                                          // }
-                                                          setState(() {});
+                                                          return KeyEventResult
+                                                              .ignored;
                                                         },
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    25)),
-                                                        onTap: () {
-                                                          fetchContent(movie);
-                                                        },
-                                                        child: Container(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          height: 50,
-                                                          color: Colors
-                                                              .transparent,
-                                                          child:
-                                                              const GradientText(
-                                                            "Watch Now",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment
-                                                                    .topLeft,
-                                                                end: Alignment
-                                                                    .bottomRight,
-                                                                colors: [
-                                                                  Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          254,
-                                                                          245,
-                                                                          255),
-                                                                  Color
-                                                                      .fromARGB(
-                                                                          153,
-                                                                          120,
-                                                                          82,
-                                                                          125)
-                                                                ]),
+                                                        child: InkWell(
+                                                          key: const Key(
+                                                              "watch"),
+                                                          focusNode:
+                                                              focusNodes[index],
+                                                          autofocus: true,
+                                                          onFocusChange:
+                                                              (value) {
+                                                            setState(() {
+                                                              activeIndex =
+                                                                  index;
+                                                            });
+                                                            // scrollToSection(
+                                                            //     scrollController
+                                                            //             .offset +
+                                                            //         30);
+                                                            // if (focusNodes[index]
+                                                            //     .hasFocus) {
+                                                            //   if (index == 0) {
+                                                            //     scrollToSection(
+                                                            //         0);
+                                                            //   }
+                                                            //   if (index ==
+                                                            //       watchlist
+                                                            //               .length -
+                                                            //           1) {
+                                                            //     scrollToSection(
+                                                            //         scrollController
+                                                            //                 .offset +
+                                                            //             30);
+                                                            //   }
+                                                            //   // scrollToSection(0);
+                                                            // }
+                                                            setState(() {});
+                                                          },
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          25)),
+                                                          onTap: () {
+                                                            fetchContent(movie);
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            height: 50,
+                                                            color: Colors
+                                                                .transparent,
+                                                            child:
+                                                                const GradientText(
+                                                              "Watch Now",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                              gradient: LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topLeft,
+                                                                  end: Alignment.bottomRight,
+                                                                  colors: [
+                                                                    Color.fromARGB(
+                                                                        255,
+                                                                        254,
+                                                                        245,
+                                                                        255),
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            153,
+                                                                            120,
+                                                                            82,
+                                                                            125)
+                                                                  ]),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Focus(
-                                                    key: const Key("remove"),
-                                                    focusNode: fnRemove[index],
-                                                    onFocusChange: (value) {
-                                                      setState(() {});
-                                                    },
-                                                    child: InkWell(
-                                                      onTap: () async {
-                                                        await removeFromWatchhList(
-                                                            movie);
-                                                        setState(() {
-                                                          watchlist =
-                                                              getWatchhList();
-                                                        });
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Focus(
+                                                      key: const Key("remove"),
+                                                      focusNode:
+                                                          fnRemove[index],
+                                                      onFocusChange: (value) {
+                                                        setState(() {});
                                                       },
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                vertical: 13,
-                                                                horizontal: 13),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .all(
-                                                                        Radius.circular(
-                                                                            25)),
-                                                                border: fnRemove[
-                                                                            index]
-                                                                        .hasFocus
-                                                                    ? Border
-                                                                        .all(
-                                                                        color: const Color
-                                                                            .fromARGB(
-                                                                            255,
-                                                                            173,
-                                                                            0,
-                                                                            226),
-                                                                        width:
-                                                                            2,
-                                                                      )
-                                                                    : Border
-                                                                        .all(
-                                                                        color: const Color
-                                                                            .fromARGB(
-                                                                            52,
-                                                                            137,
-                                                                            0,
-                                                                            158),
-                                                                        width:
-                                                                            1,
-                                                                      ),
-                                                                color: const Color
-                                                                    .fromARGB(
-                                                                    70,
-                                                                    83,
-                                                                    2,
-                                                                    117)),
-                                                        child: const Row(
-                                                          children: [
-                                                            HugeIcon(
-                                                                icon: HugeIcons
-                                                                    .strokeRoundedPlayListRemove,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        140,
-                                                                        0,
-                                                                        175)),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              "Remove from Watchlist",
-                                                              style: TextStyle(
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          await removeFromWatchhList(
+                                                              movie);
+                                                          setState(() {
+                                                            watchlist =
+                                                                getWatchhList();
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 13,
+                                                                  horizontal:
+                                                                      13),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  borderRadius:
+                                                                      const BorderRadius
+                                                                          .all(
+                                                                          Radius.circular(
+                                                                              25)),
+                                                                  border: fnRemove[
+                                                                              index]
+                                                                          .hasFocus
+                                                                      ? Border
+                                                                          .all(
+                                                                          color: const Color
+                                                                              .fromARGB(
+                                                                              255,
+                                                                              173,
+                                                                              0,
+                                                                              226),
+                                                                          width:
+                                                                              2,
+                                                                        )
+                                                                      : Border
+                                                                          .all(
+                                                                          color: const Color
+                                                                              .fromARGB(
+                                                                              52,
+                                                                              137,
+                                                                              0,
+                                                                              158),
+                                                                          width:
+                                                                              1,
+                                                                        ),
+                                                                  color: const Color
+                                                                      .fromARGB(
+                                                                      70,
+                                                                      83,
+                                                                      2,
+                                                                      117)),
+                                                          child: const Row(
+                                                            children: [
+                                                              HugeIcon(
+                                                                  icon: HugeIcons
+                                                                      .strokeRoundedPlayListRemove,
                                                                   color: Color
                                                                       .fromARGB(
                                                                           255,
                                                                           140,
                                                                           0,
                                                                           175)),
-                                                            )
-                                                          ],
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                "Remove from Watchlist",
+                                                                style: TextStyle(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            140,
+                                                                            0,
+                                                                            175)),
+                                                              )
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                              left: 0,
-                              child: Container(
-                                width: 120,
-                                height: 480,
-                                decoration: const BoxDecoration(
-                                    gradient: LinearGradient(colors: [
-                                  AppColors.bg2,
-                                  Colors.transparent
-                                ])),
-                              )),
-                        ],
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height - 200,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "lib/assets/images/wish.png",
-                              opacity: const AlwaysStoppedAnimation(.8),
-                            ),
-                            const Text(
-                              "Add movies to your watchlist",
-                              style: TextStyle(
-                                  color: Color.fromARGB(75, 235, 199, 255)),
-                            ),
+                            Positioned(
+                                left: 0,
+                                child: Container(
+                                  width: 120,
+                                  height: 380,
+                                  decoration: const BoxDecoration(
+                                      gradient: LinearGradient(colors: [
+                                    AppColors.bg2,
+                                    Color.fromARGB(0, 17, 0, 17),
+                                  ])),
+                                )),
                           ],
-                        ),
-                      )
-              ],
-            ),
-            isLoading
-                ? BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.transparent,
-                      child: const CircularProgressIndicator(
-                        color: Color.fromARGB(255, 146, 0, 159),
-                      ),
+                        )
+                      ],
                     ),
-                  )
-                : const SizedBox()
-          ]),
-        ),
+                    isLoading
+                        ? BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                            child: Container(
+                              alignment: Alignment.center,
+                              color: Colors.transparent,
+                              child: const CircularProgressIndicator(
+                                color: Color.fromARGB(255, 146, 0, 159),
+                              ),
+                            ),
+                          )
+                        : const SizedBox()
+                  ])
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height - 200,
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "lib/assets/images/wish.png",
+                          opacity: const AlwaysStoppedAnimation(.8),
+                        ),
+                        const Text(
+                          "Add movies to your watchlist",
+                          style: TextStyle(
+                              color: Color.fromARGB(75, 235, 199, 255)),
+                        ),
+                      ],
+                    ),
+                  )),
       ),
     );
   }
