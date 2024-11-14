@@ -157,48 +157,36 @@ class _PlayState extends State<Play> {
                           alignment: Alignment.topLeft,
                           child: Container(
                             alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width / 2 - 30,
-                            height: 350,
+                            width: isDesktop
+                                ? MediaQuery.of(context).size.width / 2 - 30
+                                : MediaQuery.of(context).size.width - 30,
+                            height: isDesktop ? 350 : 300,
                             child: Stack(
                               children: [
-                                Focus(
-                                  focusNode: fnPlayer,
-                                  onFocusChange: (value) => setState(() {}),
-                                  onKeyEvent: (node, event) {
-                                    if (event.logicalKey ==
-                                            LogicalKeyboardKey.select ||
-                                        event.logicalKey ==
-                                            LogicalKeyboardKey.enter) {
-                                      togglePlayPause();
-                                      return KeyEventResult.handled;
-                                    }
-                                    return KeyEventResult.ignored;
+                                InkWell(
+                                  onTap: () {
+                                    togglePlayPause();
                                   },
-                                  child: InkWell(
-                                    onTap: () {
-                                      togglePlayPause();
-                                    },
-                                    onDoubleTap: () {
-                                      // toggleFullscreen(context);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: fnPlayer.hasFocus
-                                            ? Border.all(
-                                                width: 2,
-                                                color: AppColors.borderTV)
-                                            : Border.all(
-                                                width: 0,
-                                                color: Colors.transparent),
-                                      ),
-                                      child: Video(
-                                        pauseUponEnteringBackgroundMode: true,
-                                        controller: controller,
-                                        fit: BoxFit.cover,
-                                        fill: const Color.fromARGB(
-                                            255, 20, 0, 22),
-                                        controls: MaterialVideoControls,
-                                      ),
+                                  onDoubleTap: () {
+                                    // toggleFullscreen(context);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: fnPlayer.hasFocus
+                                          ? Border.all(
+                                              width: 2,
+                                              color: AppColors.borderTV)
+                                          : Border.all(
+                                              width: 0,
+                                              color: Colors.transparent),
+                                    ),
+                                    child: Video(
+                                      pauseUponEnteringBackgroundMode: true,
+                                      controller: controller,
+                                      fit: BoxFit.cover,
+                                      fill:
+                                          const Color.fromARGB(255, 20, 0, 22),
+                                      controls: MaterialVideoControls,
                                     ),
                                   ),
                                 ),
@@ -207,9 +195,12 @@ class _PlayState extends State<Play> {
                           )),
                       const SizedBox(
                         width: 50,
+                        height: 30,
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 2 - 100,
+                        width: isDesktop
+                            ? MediaQuery.of(context).size.width / 2 - 100
+                            : MediaQuery.of(context).size.width - 30,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

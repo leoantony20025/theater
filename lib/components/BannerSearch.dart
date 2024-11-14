@@ -37,8 +37,10 @@ class _BannerSearchState extends State<BannerSearch> {
     bool isWatchList = checkMovieInWatchList(widget.movie!.name);
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: MediaQuery.of(context).size.width / 1.25,
+      duration: Duration(milliseconds: 300),
+      width: isDesktop
+          ? MediaQuery.of(context).size.width / 1.25
+          : MediaQuery.of(context).size.width - 40,
       height: 300,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -127,7 +129,9 @@ class _BannerSearchState extends State<BannerSearch> {
                           ])),
           ),
           Container(
-            width: MediaQuery.of(context).size.width / 2 + 40,
+            width: isDesktop
+                ? MediaQuery.of(context).size.width / 2 + 40
+                : MediaQuery.of(context).size.width - 40,
             height: isDesktop
                 ? MediaQuery.of(context).size.height / 1.3
                 : MediaQuery.of(context).size.height / 1.7,
@@ -144,10 +148,9 @@ class _BannerSearchState extends State<BannerSearch> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                            Color.fromARGB(162, 30, 0, 31),
-                            Color.fromARGB(140, 52, 0, 56),
-                            Color.fromARGB(233, 25, 0, 23),
-                            AppColors.bg2
+                            Color.fromARGB(0, 30, 0, 31),
+                            Color.fromARGB(18, 52, 0, 56),
+                            Color.fromARGB(38, 25, 0, 23),
                           ])),
           ),
           Container(
