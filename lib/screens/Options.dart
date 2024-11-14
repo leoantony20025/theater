@@ -144,7 +144,7 @@ class _OptionsState extends State<Options> {
                             width: isDesktop
                                 ? MediaQuery.of(context).size.width / 2 - 100
                                 : MediaQuery.of(context).size.width - 40,
-                            height: 120,
+                            height: isDesktop ? 200 : 120,
                             margin: const EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(

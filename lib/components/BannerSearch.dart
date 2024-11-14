@@ -37,24 +37,26 @@ class _BannerSearchState extends State<BannerSearch> {
     bool isWatchList = checkMovieInWatchList(widget.movie!.name);
 
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       width: isDesktop
           ? MediaQuery.of(context).size.width / 1.25
           : MediaQuery.of(context).size.width - 40,
-      height: 300,
+      height: isDesktop ? 400 : 300,
+      margin: EdgeInsets.symmetric(vertical: isDesktop ? 60 : 30),
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
-        boxShadow: ifWatchNow
-            ? [
-                const BoxShadow(
-                    blurRadius: 50,
-                    blurStyle: BlurStyle.normal,
-                    spreadRadius: 2,
-                    color: Color.fromARGB(65, 141, 2, 151))
-              ]
-            : [],
-        borderRadius: BorderRadius.circular(50),
-      ),
+          boxShadow: ifWatchNow
+              ? [
+                  const BoxShadow(
+                      blurRadius: 40,
+                      blurStyle: BlurStyle.normal,
+                      spreadRadius: 2,
+                      color: Color.fromARGB(13, 48, 1, 52))
+                ]
+              : [],
+          borderRadius: BorderRadius.circular(50),
+          border:
+              Border.all(width: 3, color: const Color.fromARGB(79, 48, 2, 48))),
       child: Stack(
         alignment: Alignment.centerRight,
         children: [
@@ -177,7 +179,7 @@ class _BannerSearchState extends State<BannerSearch> {
           ),
           Container(
             height: MediaQuery.of(context).size.height / 1.7,
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(isDesktop ? 50 : 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
