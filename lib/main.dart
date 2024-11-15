@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -10,6 +12,7 @@ import 'package:theater/screens/Language.dart';
 import 'package:theater/screens/Search.dart';
 import 'package:theater/screens/Splash.dart';
 import 'package:theater/screens/WatchList.dart';
+import 'package:theater/utils/MyHttpOverrides.dart';
 import 'screens/Main.dart';
 
 void main() async {
@@ -20,6 +23,7 @@ void main() async {
   MediaKit.ensureInitialized();
 
   WidgetsApp.debugAllowBannerOverride = true;
+  HttpOverrides.global = MyHttpOverrides();
 
   runApp(
     MultiProvider(
