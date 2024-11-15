@@ -101,7 +101,9 @@ class _MainState extends State<Main> {
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: MediaQuery.of(context).size.width < 800
           ? Container(
-              height: 70,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 10),
+              height: 91,
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color.fromARGB(41, 25, 1, 31),
@@ -117,7 +119,9 @@ class _MainState extends State<Main> {
                 unselectedItemColor: const Color.fromARGB(90, 219, 186, 232),
                 selectedItemColor: Colors.white,
                 elevation: 20,
-                // iconSize: 30,
+                iconSize: 20,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(

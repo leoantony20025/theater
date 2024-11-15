@@ -92,7 +92,9 @@ class _BannerHomeState extends State<BannerHome> {
                         ])),
         ),
         Container(
-          width: MediaQuery.of(context).size.width / 2,
+          width: isDesktop
+              ? MediaQuery.of(context).size.width / 2
+              : MediaQuery.of(context).size.width,
           height: isDesktop
               ? MediaQuery.of(context).size.height / 1.3
               : MediaQuery.of(context).size.height / 1.7,
@@ -110,10 +112,9 @@ class _BannerHomeState extends State<BannerHome> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                          Color.fromARGB(162, 30, 0, 31),
-                          Color.fromARGB(140, 52, 0, 56),
-                          Color.fromARGB(233, 25, 0, 23),
-                          AppColors.bg2
+                          Color.fromARGB(50, 30, 0, 31),
+                          Color.fromARGB(49, 52, 0, 56),
+                          Color.fromARGB(117, 25, 0, 23),
                         ])),
         ),
         Container(

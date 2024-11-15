@@ -6,7 +6,7 @@ import 'package:theater/models/Movie.dart';
 import 'package:html/dom.dart';
 
 final dio = Dio();
-String baseUrl = "https://bolly2tolly.land";
+String baseUrl = "https://bolly2tolly.dad";
 String noImage =
     "https://drive.usercontent.google.com/download?id=1yR3-UEY5Y3q2U1QuqY0DdLt_mViyLetV&export=view&authuser=0";
 List languages = [

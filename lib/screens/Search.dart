@@ -219,6 +219,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       FocusScope.of(context).unfocus();
                       search();
                     },
+                    onSubmitted: (value) {
+                      setState(() {
+                        isRequestSearch = false;
+                        word = textEditingController.text;
+                      });
+                      FocusScope.of(context).unfocus();
+                      search();
+                    },
                     onTap: () {
                       fnSearch.requestFocus();
                       setState(() {
