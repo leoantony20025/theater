@@ -1,6 +1,6 @@
 {
-    "name": "theater",
-    "short_name": "theater",
+    "name": "Theater",
+    "short_name": "Theater",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

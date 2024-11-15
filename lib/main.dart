@@ -14,6 +14,7 @@ import 'package:theater/screens/Splash.dart';
 import 'package:theater/screens/WatchList.dart';
 import 'package:theater/utils/MyHttpOverrides.dart';
 import 'screens/Main.dart';
+// import 'package:fullscreen_window/fullscreen_window.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,10 @@ void main() async {
 
   WidgetsApp.debugAllowBannerOverride = true;
   HttpOverrides.global = MyHttpOverrides();
+
+  // if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+  //   FullScreenWindow.setFullScreen(true); // Full screen
+  // }
 
   runApp(
     MultiProvider(
