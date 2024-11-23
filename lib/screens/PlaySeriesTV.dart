@@ -7,6 +7,7 @@ import 'package:theater/components/VideoPlayer.dart';
 import 'package:theater/models/Movie.dart';
 import 'package:theater/prefs.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:theater/services/appService.dart';
 
 class PlaySeriesTV extends StatefulWidget {
   Map<String, dynamic> content;
@@ -20,19 +21,17 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
   int currentServerIndex = 0;
   late FocusNode fnWatchNow;
   late FocusNode fnBackButton;
-  late List<FocusNode> fnEpisodeButtons;
-  late FocusNode fnPlayPauseButton;
-  late FocusNode fnFullscreenButton;
+  late List<FocusNode> fnEpisodes;
+  late FocusNode fnWatchList;
 
   @override
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
     fnWatchNow = FocusNode();
     fnBackButton = FocusNode();
-    fnEpisodeButtons =
+    fnEpisodes =
         List.generate(widget.content['episodes'].length, (_) => FocusNode());
-    fnPlayPauseButton = FocusNode();
-    fnFullscreenButton = FocusNode();
+    fnWatchList = FocusNode();
     super.initState();
   }
 
@@ -40,11 +39,10 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
   void dispose() {
     fnWatchNow.dispose();
     fnBackButton.dispose();
-    for (var focusNode in fnEpisodeButtons) {
+    for (var focusNode in fnEpisodes) {
       focusNode.dispose();
     }
-    fnPlayPauseButton.dispose();
-    fnFullscreenButton.dispose();
+    fnWatchList.dispose();
     super.dispose();
   }
 
@@ -105,14 +103,6 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                   InkWell(
                     focusNode: fnBackButton,
                     focusColor: Colors.white,
-                    // onKeyEvent: (node, event) {
-                    //   if (event.logicalKey == LogicalKeyboardKey.select ||
-                    //       event.logicalKey == LogicalKeyboardKey.enter) {
-                    //     Navigator.pop(context);
-                    //     return KeyEventResult.handled;
-                    //   }
-                    //   return KeyEventResult.ignored;
-                    // },
                     onTap: () {
                       Navigator.pop(context);
                     },
@@ -139,10 +129,10 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                         ]),
                   ),
                   const SizedBox(
-                    height: 50,
+                    height: 100,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       AnimatedContainer(
@@ -151,13 +141,14 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                         alignment: Alignment.center,
                         child: CachedNetworkImage(
                             fadeInCurve: Curves.bounceIn,
-                            scale: 0.9,
+                            scale: 0.7,
                             imageUrl: widget.content['photo']),
                       ),
                       const SizedBox(
                         width: 50,
                       ),
                       Expanded(
+                        // width: MediaQuery.of(context).size.width / 3,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +263,7 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                                 // ),
                                 !isWatchList
                                     ? InkWell(
-                                        focusNode: fnPlayPauseButton,
+                                        focusNode: fnWatchList,
                                         onFocusChange: (value) {
                                           setState(() {});
                                         },
@@ -300,8 +291,7 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(10)),
-                                                border: fnPlayPauseButton
-                                                        .hasFocus
+                                                border: fnWatchList.hasFocus
                                                     ? Border.all(
                                                         color:
                                                             AppColors.borderTV,
@@ -375,51 +365,162 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      SizedBox(
-                        width: 150,
-                        height: 300,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  SizedBox(
+                    // width: MediaQuery.of(context).size.width / 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Episodes",
+                          style: TextStyle(color: Colors.white, fontSize: 23),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
                             children: episodes.map<Widget>(
                               (e) {
                                 String? photo =
                                     e['photo'].toString().contains("noimg")
                                         ? e['photo']
                                         : "https:${e['photo']}";
+                                int index = int.parse(e['eno'].toString()) - 1;
                                 return Focus(
                                     child: InkWell(
+                                  focusNode: fnEpisodes[index],
+                                  onFocusChange: (value) {},
+                                  onTap: () async {
+                                    List videos = await fetchEpisodeVideos(
+                                        e['url'].toString());
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => VideoPlayer(
+                                                  url: videos[0],
+                                                )));
+                                  },
                                   child: Container(
-                                    margin: EdgeInsets.all(8),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: CachedNetworkImage(
-                                        imageUrl: photo ?? "",
-                                        placeholder: (context, url) =>
-                                            Shimmer.fromColors(
-                                          direction: ShimmerDirection.ltr,
-                                          enabled: true,
-                                          loop: 5,
-                                          baseColor: const Color.fromARGB(
-                                              71, 224, 224, 224),
-                                          highlightColor: const Color.fromARGB(
-                                              70, 245, 245, 245),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                1.7,
-                                            color: const Color.fromARGB(
-                                                255, 0, 0, 0),
+                                    width: 280,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 20),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 280,
+                                          height: 230,
+                                          child: Stack(
+                                            alignment:
+                                                AlignmentDirectional.topStart,
+                                            children: [
+                                              Text(
+                                                e['eno'].toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 100,
+                                                    fontFamily: "Impact",
+                                                    color: Color.fromARGB(
+                                                        26, 177, 109, 255)),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                child: Container(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Colors.white,
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                                blurRadius: 30,
+                                                                spreadRadius:
+                                                                    -10,
+                                                                offset: Offset(
+                                                                    -10, -10),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        37,
+                                                                        228,
+                                                                        205,
+                                                                        255)),
+                                                            BoxShadow(
+                                                                blurRadius: 30,
+                                                                offset: Offset(
+                                                                    10, 20),
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        211,
+                                                                        16,
+                                                                        0,
+                                                                        23))
+                                                          ],
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          40))),
+                                                  child: CachedNetworkImage(
+                                                    width: fnEpisodes[index]
+                                                            .hasFocus
+                                                        ? 300
+                                                        : 280,
+                                                    height: fnEpisodes[index]
+                                                            .hasFocus
+                                                        ? 170
+                                                        : 150,
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: photo ?? "",
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Shimmer.fromColors(
+                                                      direction:
+                                                          ShimmerDirection.ltr,
+                                                      enabled: true,
+                                                      loop: 5,
+                                                      baseColor:
+                                                          const Color.fromARGB(
+                                                              71,
+                                                              224,
+                                                              224,
+                                                              224),
+                                                      highlightColor:
+                                                          const Color.fromARGB(
+                                                              70,
+                                                              245,
+                                                              245,
+                                                              245),
+                                                      child: Container(
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            1.7,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 0, 0, 0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          e['title'].toString(),
+                                          style:
+                                              TextStyle(color: Colors.white60),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ));
@@ -427,9 +528,9 @@ class _PlaySeriesTVState extends State<PlaySeriesTV> {
                             ).toList(),
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

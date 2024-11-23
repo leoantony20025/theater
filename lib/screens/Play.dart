@@ -470,7 +470,7 @@ class _PlayState extends State<Play> {
                             Container(
                               alignment: Alignment.center,
                               width: MediaQuery.of(context).size.width - 30,
-                              height: 300,
+                              height: 180,
                               child: Stack(
                                 children: [
                                   Video(

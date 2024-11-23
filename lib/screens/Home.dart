@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:theater/AppColors.dart';
+import 'package:theater/components/AllMovies.dart';
 import 'package:theater/components/BannerHome.dart';
 import 'package:theater/components/HorizontalScrollList.dart';
 import 'package:theater/models/Movie.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Random random = Random();
   late int randomIndex = 4;
   final ScrollController scrollController = ScrollController();
+  late FocusNode fnAll;
 
   void scrollToSection(double offset) {
     scrollController.animateTo(
@@ -38,18 +40,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
+    fnAll = FocusNode();
     randomIndex = random.nextInt(4);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    fnAll.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final appProvider = Provider.of<AppProvider>(context, listen: true);
     Map<String, List<Movie?>> currentContents = appProvider.currentContents;
-    // Movie? banner = currentContents['movies']?[randomIndex];
+    List<Movie?>? movies = currentContents['movies'];
     double screenWidth = MediaQuery.of(context).size.width;
     bool isDesktop = screenWidth > 800;
-    // bool isWatchList = checkMovieInWatchList(banner?.name ?? "");
 
     void setIsLoading(bool load) {
       setState(() {
@@ -120,92 +129,139 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Color.fromARGB(255, 123, 2, 154))
               : ScrollConfiguration(
                   behavior: NoScrollBehavior(),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(bottom: 30),
+                  child: Scrollbar(
                     controller: scrollController,
-                    child: currentContents['movies']!.isNotEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Focus(
-                                skipTraversal: true,
-                                onFocusChange: (value) {
-                                  if (value) {
-                                    scrollToSection(0);
-                                  }
-                                },
-                                child: BannerHome(fetchContent: fetchContent),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 20),
-                                child: Text(
-                                  "Latest Movies",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 20,
+                    thumbVisibility: false,
+                    trackVisibility: false,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      padding: const EdgeInsets.only(bottom: 30),
+                      controller: scrollController,
+                      child: movies!.isNotEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Focus(
+                                  skipTraversal: true,
+                                  onFocusChange: (value) {
+                                    if (value) {
+                                      scrollToSection(0);
+                                    }
+                                  },
+                                  child: BannerHome(fetchContent: fetchContent),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  child: Text(
+                                    "Latest Movies",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Focus(
-                                skipTraversal: true,
-                                onFocusChange: (value) {
-                                  if (value) {
-                                    scrollToSection(300);
-                                  }
-                                },
-                                child: HorizontalScrollList(
-                                  currentContents: currentContents['movies']!,
-                                  isLoading: isLoading,
-                                  setIsLoading: setIsLoading,
+                                Focus(
+                                  onFocusChange: (value) {
+                                    if (value) {
+                                      scrollToSection(300);
+                                    }
+                                  },
+                                  child: HorizontalScrollList(
+                                    currentContents: currentContents['movies']!,
+                                    isLoading: isLoading,
+                                    setIsLoading: setIsLoading,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 50,
-                              ),
-                              currentContents['series']!.isNotEmpty
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 20),
-                                          child: Text(
-                                            "Latest Series",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 20),
-                                          ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.symmetric(horizontal: 30),
+                                  child: Focus(
+                                    focusNode: fnAll,
+                                    onFocusChange: (value) {
+                                      setState(() {});
+                                    },
+                                    canRequestFocus: true,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) {
+                                            return AllMovies();
+                                          },
+                                        ));
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                            color: const Color.fromARGB(
+                                                37, 189, 108, 229),
+                                            border: Border.all(
+                                                color: fnAll.hasFocus
+                                                    ? const Color.fromARGB(
+                                                        255, 230, 0, 255)
+                                                    : const Color.fromARGB(
+                                                        0, 82, 0, 114),
+                                                width: 2)),
+                                        child: const Text(
+                                          "All Movies",
+                                          style:
+                                              TextStyle(color: Colors.white38),
                                         ),
-                                        HorizontalScrollList(
-                                          currentContents:
-                                              currentContents['series']!,
-                                          isLoading: isLoading,
-                                          setIsLoading: setIsLoading,
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          )
-                        : const SizedBox(),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                // currentContents['series']!.isNotEmpty
+                                //     ? Column(
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.start,
+                                //         children: [
+                                //           const Padding(
+                                //             padding: EdgeInsets.symmetric(
+                                //                 horizontal: 20, vertical: 20),
+                                //             child: Text(
+                                //               "Latest Series",
+                                //               style: TextStyle(
+                                //                   color: Colors.white,
+                                //                   fontWeight: FontWeight.w500,
+                                //                   fontSize: 20),
+                                //             ),
+                                //           ),
+                                //           HorizontalScrollList(
+                                //             currentContents:
+                                //                 currentContents['series']!,
+                                //             isLoading: isLoading,
+                                //             setIsLoading: setIsLoading,
+                                //           ),
+                                //         ],
+                                //       )
+                                //     : const SizedBox(),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ),
                   ),
                 )),
       isLoading
           ? BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
               child: Container(
-                alignment: Alignment.center,
-                color: Colors.transparent,
-                child: const CircularProgressIndicator(
-                  color: Color.fromARGB(255, 146, 0, 159),
-                ),
-              ),
+                  alignment: Alignment.center,
+                  color: Colors.transparent,
+                  child: Image.asset(
+                    "lib/assets/images/loader.gif",
+                    width: 100,
+                  )),
             )
           : const SizedBox()
     ]));

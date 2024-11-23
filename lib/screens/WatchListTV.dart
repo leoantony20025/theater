@@ -134,7 +134,7 @@ class _WatchListTVState extends State<WatchListTV> {
       height: MediaQuery.of(context).size.height,
       // padding: const EdgeInsets.only(top: 30, left: 10),
       alignment: Alignment.topLeft,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -255,21 +255,10 @@ class _WatchListTVState extends State<WatchListTV> {
                                     policy: OrderedTraversalPolicy(),
                                     child: Row(
                                       children: watchlist.map((movie) {
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
                                         int index = watchlist.indexOf(movie);
                                         return AnimatedContainer(
-                                          duration: Duration(milliseconds: 300),
-                                          // width: focusNodes[index].hasFocus
-                                          //     ? (MediaQuery.of(context).size.width / 2)
-                                          //     : (MediaQuery.of(context).size.width / 3) -
-                                          //         50,
+                                          duration:
+                                              const Duration(milliseconds: 300),
                                           width: (MediaQuery.of(context)
                                                       .size
                                                       .width /
@@ -682,12 +671,14 @@ class _WatchListTVState extends State<WatchListTV> {
                         ? BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                             child: Container(
-                              alignment: Alignment.center,
-                              color: Colors.transparent,
-                              child: const CircularProgressIndicator(
-                                color: Color.fromARGB(255, 146, 0, 159),
-                              ),
-                            ),
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                alignment: Alignment.center,
+                                color: Colors.transparent,
+                                child: Image.asset(
+                                  "lib/assets/images/loader.gif",
+                                  width: 100,
+                                )),
                           )
                         : const SizedBox()
                   ])

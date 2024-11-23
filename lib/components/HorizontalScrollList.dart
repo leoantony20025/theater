@@ -82,25 +82,18 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
         ...content
       };
       widget.setIsLoading(false);
-      if (isTV) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => movie.isMovie
-                ? PlayTV(
-                    content: data,
-                  )
-                : PlaySeriesTV(
-                    content: data,
-                  )));
-      } else {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => movie.isMovie
-                ? Play(
-                    content: data,
-                  )
-                : PlayTV(
-                    content: data,
-                  )));
-      }
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => movie.isMovie
+              ? isTV
+                  ? PlayTV(
+                      content: data,
+                    )
+                  : Play(
+                      content: data,
+                    )
+              : PlaySeriesTV(
+                  content: data,
+                )));
     }
 
     return Stack(children: [
@@ -125,16 +118,10 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                       ? Focus(
                           onKeyEvent: (node, event) {
                             if (event is KeyDownEvent) {
-                              // if (event.logicalKey == LogicalKeyboardKey.select ||
-                              //     event.logicalKey == LogicalKeyboardKey.enter) {
-                              //   return KeyEventResult.handled;
-                              // }
                               if (event.logicalKey ==
                                   LogicalKeyboardKey.arrowLeft) {
-                                // if (!list1FocusNodes[0].hasFocus) {
                                 moveLeft();
                                 list1FocusNodes[index - 1].requestFocus();
-                                // }
                                 return KeyEventResult.handled;
                               }
                               if (event.logicalKey ==
@@ -154,46 +141,39 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                               setState(() {});
                             },
                             autofocus: index == 0 ? true : false,
-                            onTap: () async {
-                              if (activeIndex == index) {
-                                if (movie?.url != null) {
-                                  await fetchContent(movie!);
-                                }
-                              } else {
+                            onTap: () {
+                              fetchContent(movie!);
+                            },
+                            child: MouseRegion(
+                              onEnter: (_) {
                                 setState(() {
                                   activeIndex = index;
                                 });
-                              }
-                            },
-                            child: MouseRegion(
-                              // onEnter: (_) {
-                              //   setState(() {
-                              //     activeIndex = index;
-                              //   });
-                              // },
-                              // onExit: (_) {
-                              //   setState(() {
-                              //     activeIndex = null;
-                              //   });
-                              // },
-                              // onHover: (event) {
-                              //   setState(() {
-                              //     activeIndex = index;
-                              //   });
-                              // },
+                              },
+                              onExit: (_) {
+                                setState(() {
+                                  activeIndex = null;
+                                });
+                              },
+                              onHover: (event) {
+                                setState(() {
+                                  activeIndex = index;
+                                });
+                              },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
                                 padding: const EdgeInsets.only(left: 20),
                                 margin:
                                     EdgeInsets.only(left: index == 0 ? 15 : 0),
-                                width: list1FocusNodes[index].hasFocus
+                                width: list1FocusNodes[index].hasFocus ||
+                                        activeIndex == index
                                     ? isDesktop
                                         ? 500
                                         : 300
                                     : isDesktop
                                         ? 200
                                         : 150,
-                                height: isDesktop ? 270 : 250,
+                                height: isDesktop ? 270 : 200,
                                 child: Stack(
                                   children: [
                                     CachedNetworkImage(
@@ -231,17 +211,20 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                                         ),
                                       ),
                                     ),
-                                    if (list1FocusNodes[index].hasFocus)
+                                    if (list1FocusNodes[index].hasFocus ||
+                                        activeIndex == index)
                                       Positioned(
                                         bottom: 0,
-                                        width: list1FocusNodes[index].hasFocus
-                                            ? isDesktop
-                                                ? 480
-                                                : 280
-                                            : isDesktop
-                                                ? 200
-                                                : 150,
-                                        height: isDesktop ? 270 : 250,
+                                        width:
+                                            list1FocusNodes[index].hasFocus ||
+                                                    activeIndex == index
+                                                ? isDesktop
+                                                    ? 480
+                                                    : 280
+                                                : isDesktop
+                                                    ? 200
+                                                    : 150,
+                                        height: isDesktop ? 270 : 200,
                                         child: Container(
                                           alignment: Alignment.bottomLeft,
                                           decoration: BoxDecoration(

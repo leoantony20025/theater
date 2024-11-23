@@ -40,7 +40,7 @@ Future<Map<String, List<Movie?>>> fetchContents(int lang) async {
                 ?.attributes['src']
                 .toString() ??
             noImage,
-        language: "Tamil",
+        language: languages[lang - 1]['name'],
         url: li.querySelector('a')?.attributes['href'].toString() ?? "",
         duration: li.querySelector('.Time')?.text ?? "",
         year:
@@ -49,38 +49,38 @@ Future<Map<String, List<Movie?>>> fetchContents(int lang) async {
     movies.add(movie);
   }
 
-  String urlSeries = lang == 0
-      ? baseUrl
-      : '${baseUrl + languages[lang - 1]['path']}?tr_post_type=2';
-  final res2 = await dio.get(urlSeries);
+  // String urlSeries = lang == 0
+  //     ? baseUrl
+  //     : '${baseUrl + languages[lang - 1]['path']}?tr_post_type=2';
+  // final res2 = await dio.get(urlSeries);
 
-  var documentSeries = HtmlParser(res2.data).parse();
-  var ulSeries = documentSeries.querySelector('.MovieList');
-  var liseries = ulSeries?.querySelectorAll('li');
-  List<Movie> series = [];
+  // var documentSeries = HtmlParser(res2.data).parse();
+  // var ulSeries = documentSeries.querySelector('.MovieList');
+  // var liseries = ulSeries?.querySelectorAll('li');
+  // List<Movie> series = [];
 
-  if (liseries != null) {
-    for (var li in liseries) {
-      var serie = Movie(
-          name: li.querySelector('.Title')?.text ?? "",
-          description: li.querySelector('.Description p')!.text,
-          photo: li
-                  .querySelector('.attachment-thumbnail')
-                  ?.attributes['src']
-                  .toString() ??
-              "", // No Image Found -------------------------------------------
-          language: "Tamil",
-          url: li.querySelector('a')?.attributes['href'].toString() ?? "",
-          duration: li.querySelector('.Time')?.text ?? "",
-          year: li.querySelector('.Title')?.text ?? "",
-          isMovie: false);
-      series.add(serie);
-    }
-  }
+  // if (liseries != null) {
+  //   for (var li in liseries) {
+  //     var serie = Movie(
+  //         name: li.querySelector('.Title')?.text ?? "",
+  //         description: li.querySelector('.Description p')!.text,
+  //         photo: li
+  //                 .querySelector('.attachment-thumbnail')
+  //                 ?.attributes['src']
+  //                 .toString() ??
+  //             "", // No Image Found -------------------------------------------
+  //         language: languages[lang - 1]['name'],
+  //         url: li.querySelector('a')?.attributes['href'].toString() ?? "",
+  //         duration: li.querySelector('.Time')?.text ?? "",
+  //         year: li.querySelector('.Title')?.text ?? "",
+  //         isMovie: false);
+  //     series.add(serie);
+  //   }
+  // }
 
-  print(series.isNotEmpty ? series[0].name : "No");
+  // print(series.isNotEmpty ? series[0].name : "No");
 
-  return {"movies": movies, "series": series};
+  return {"movies": movies, "series": []};
 }
 
 Future<Map<String, List<Movie?>>> fetchLatestContents() async {
@@ -91,6 +91,8 @@ Future<Map<String, List<Movie?>>> fetchLatestContents() async {
   List<Movie> movies = [];
 
   for (var li in ul) {
+    var lang =
+        li.querySelector('.Description > .Genre > a')?.innerHtml.split(" ")[0];
     var movie = Movie(
         name: li.querySelector('.Title')?.text.split('(')[0] ?? "",
         description: li
@@ -105,7 +107,7 @@ Future<Map<String, List<Movie?>>> fetchLatestContents() async {
                 ?.attributes['src']
                 .toString() ??
             noImage,
-        language: "Tamil",
+        language: lang ?? "",
         url: li.querySelector('a')?.attributes['href'].toString() ?? "",
         duration: li.querySelector('.Time')?.text ?? "",
         year:
@@ -114,36 +116,68 @@ Future<Map<String, List<Movie?>>> fetchLatestContents() async {
     movies.add(movie);
   }
 
-  String urlSeries = '$baseUrl/category/tv-shows?tr_post_type=2';
-  final res2 = await dio.get(urlSeries);
+  // String urlSeries = '$baseUrl/category/tv-shows?tr_post_type=2';
+  // final res2 = await dio.get(urlSeries);
 
-  var documentSeries = HtmlParser(res2.data).parse();
-  var ulSeries = documentSeries.querySelector('.MovieList');
-  var liseries = ulSeries?.querySelectorAll('li');
-  List<Movie> series = [];
+  // var documentSeries = HtmlParser(res2.data).parse();
+  // var ulSeries = documentSeries.querySelector('.MovieList');
+  // var liseries = ulSeries?.querySelectorAll('li');
+  // List<Movie> series = [];
 
-  if (liseries != null) {
-    for (var li in liseries) {
-      var serie = Movie(
-          name: li.querySelector('.Title')?.text ?? "",
-          description: li.querySelector('.Description p')!.text,
-          photo: li
-                  .querySelector('.attachment-thumbnail')
-                  ?.attributes['src']
-                  .toString() ??
-              noImage,
-          language: "Tamil",
-          url: li.querySelector('a')?.attributes['href'].toString() ?? "",
-          duration: li.querySelector('.Time')?.text ?? "",
-          year: li.querySelector('.Title')?.text ?? "",
-          isMovie: false);
-      series.add(serie);
-    }
-  }
+  // if (liseries != null) {
+  //   for (var li in liseries) {
+  //     var serie = Movie(
+  //         name: li.querySelector('.Title')?.text ?? "",
+  //         description: li.querySelector('.Description p')!.text,
+  //         photo: li
+  //                 .querySelector('.attachment-thumbnail')
+  //                 ?.attributes['src']
+  //                 .toString() ??
+  //             noImage,
+  //         language: languages[lang - 1]['name'],
+  //         url: li.querySelector('a')?.attributes['href'].toString() ?? "",
+  //         duration: li.querySelector('.Time')?.text ?? "",
+  //         year: li.querySelector('.Title')?.text ?? "",
+  //         isMovie: false);
+  //     series.add(serie);
+  //   }
+  // }
 
   print(movies[0].description);
 
   return {"movies": movies, "series": movies};
+}
+
+Future<List<Movie>> loadMoreMovies(int offset, int lang) async {
+  String url = lang == 0
+      ? baseUrl
+      : '${baseUrl + languages[lang - 1]['path']}/page/$offset?tr_post_type=1';
+  final res = await dio.get(url);
+  var document = HtmlParser(res.data).parse();
+  var ul = document.querySelector('.MovieList');
+  var lis = ul?.querySelectorAll('li');
+  List<Movie> movies = [];
+
+  for (var li in lis!) {
+    var desc = li.querySelector('.Description p')?.text.split(',') ?? [""];
+    desc.removeAt(0);
+    var movie = Movie(
+        name: li.querySelector('.Title')?.text.split('(')[0] ?? "",
+        description: desc.join(),
+        photo: li
+                .querySelector('.attachment-thumbnail')
+                ?.attributes['src']
+                .toString() ??
+            noImage,
+        language: languages[lang - 1]['name'],
+        url: li.querySelector('a')?.attributes['href'].toString() ?? "",
+        duration: li.querySelector('.Time')?.text ?? "",
+        year:
+            li.querySelector('.Title')?.text.split('(')[1].split(')')[0] ?? "",
+        isMovie: true);
+    movies.add(movie);
+  }
+  return movies;
 }
 
 Future fetchMovieContent(String url) async {
@@ -250,10 +284,53 @@ Future fetchSeriesContent(String url) async {
       "episodes": episodes,
     };
 
-    // print("epiiiiiiiiiiiii" + content.toString());
+    print("epiiiiiiiiiiiii" + content.toString());
 
     return content;
   }
+}
+
+Future<List> fetchEpisodeVideos(String url) async {
+  var res = await dio.get(url);
+  var data = HtmlParser(res.data).parse();
+
+  var videos = [];
+  Iterable<String> servers =
+      data.querySelectorAll(".TPlayerTb").asMap().entries.map((e) {
+    return e.value.innerHtml
+        .toString()
+        .split("src=\"")[1]
+        .split("\"")[0]
+        .replaceAll("&amp;", "&")
+        .replaceAll("&#038;", "&");
+  });
+
+  for (var i = 0; i < servers.length; i++) {
+    // print("videoooo  ----- ${servers.elementAt(i).toString()}");
+    var e = servers.elementAt(i);
+    var sRes = await dio.get(e);
+    var sData = HtmlParser(sRes.data).parse();
+    var serverBaseUrl = sData.querySelector('iframe')?.attributes['src'];
+    // print("videoooo sbu " + serverBaseUrl.toString());
+
+    if (!serverBaseUrl.toString().contains("oyohd")) {
+      // var chn = serverBaseUrl!.replaceAll("neohd.xyz", "45.143.220.143");
+      // print("videoooo sbu chn " + chn.toString());
+
+      var sRes2 = await dio.get(serverBaseUrl.toString());
+      // print("videoooo sbu " + sRes.toString());
+
+      var sData2 = HtmlParser(sRes2.data).parse();
+      var baseUrl = sData2.querySelector('base')?.attributes['href'];
+      var token = extractJsVariable(sData2.outerHtml, "kaken");
+      var serverUrl = "https:${baseUrl}api/?$token&_=1732264753022";
+      var vRes = await dio.get(serverUrl);
+      videos.add(vRes.data['sources']?[0]?['file']);
+      print("videoooooooooooo ${vRes.data['sources'].toString()}");
+    }
+  }
+
+  return videos;
 }
 
 Future<List<Movie?>> fetchSearchContents(String word) async {
@@ -276,7 +353,11 @@ Future<List<Movie?>> fetchSearchContents(String word) async {
                 ?.attributes['src']
                 .toString() ??
             noImage,
-        language: "Tamil",
+        language: li
+            .querySelectorAll('.Description > .Genre > a')
+            .first
+            .innerHtml
+            .split(" ")[0],
         url: li.querySelector('a')?.attributes['href'].toString() ?? "",
         duration: li.querySelector('.Time')?.text ?? "",
         year:

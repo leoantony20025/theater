@@ -102,13 +102,12 @@ class _WatchListState extends State<WatchList> {
         child: watchlist.isNotEmpty
             ? isDesktop
                 ? Container(
-                    width: MediaQuery.of(context).size.width,
+                    // width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     // padding: const EdgeInsets.only(top: 30, left: 10),
                     alignment: Alignment.topLeft,
 
-                    child: SingleChildScrollView(
-                        child: Stack(alignment: Alignment.topRight, children: [
+                    child: Stack(alignment: Alignment.topRight, children: [
                       activeIndex != null
                           ? CachedNetworkImage(
                               imageUrl: watchlist[activeIndex].photo,
@@ -203,313 +202,277 @@ class _WatchListState extends State<WatchList> {
                           const SizedBox(
                             height: 200,
                           ),
-                          // const Text(
-                          //   "Watchlist",
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontSize: 22,
-                          //     fontWeight: FontWeight.w500,
-                          //   ),
-                          // ),
-                          // const SizedBox(
-                          //   height: 30,
-                          // ),
-
                           Stack(
                             children: [
-                              ScrollConfiguration(
-                                behavior: const MaterialScrollBehavior(),
-                                child: SingleChildScrollView(
-                                  controller: scrollController,
-                                  padding: const EdgeInsets.only(
-                                      bottom: 40, left: 20),
-                                  scrollDirection: Axis.horizontal,
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: watchlist.map((movie) {
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-                                        int index = watchlist.indexOf(movie);
-                                        return MouseRegion(
-                                          onEnter: (event) {
-                                            setState(() {
-                                              activeIndex = index;
-                                            });
-                                          },
-                                          child: AnimatedContainer(
-                                            duration:
-                                                Duration(milliseconds: 300),
-                                            // width: focusNodes[index].hasFocus
-                                            //     ? (MediaQuery.of(context).size.width / 2)
-                                            //     : (MediaQuery.of(context).size.width / 3) -
-                                            //         50,
-                                            width: (MediaQuery.of(context)
-                                                        .size
-                                                        .width /
+                              SingleChildScrollView(
+                                // controller: scrollController,
+                                padding:
+                                    const EdgeInsets.only(bottom: 40, left: 20),
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: watchlist.map((movie) {
+                                    int index = watchlist.indexOf(movie);
+                                    return MouseRegion(
+                                      onEnter: (event) {
+                                        setState(() {
+                                          activeIndex = index;
+                                        });
+                                      },
+                                      child: AnimatedContainer(
+                                        duration: Duration(milliseconds: 300),
+                                        // width: focusNodes[index].hasFocus
+                                        //     ? (MediaQuery.of(context).size.width / 2)
+                                        //     : (MediaQuery.of(context).size.width / 3) -
+                                        //         50,
+                                        width:
+                                            (MediaQuery.of(context).size.width /
                                                     3) -
                                                 50,
-                                            margin: EdgeInsets.only(
-                                                right: 40,
-                                                left: index == 0 ? 20 : 0),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height -
+                                        margin: EdgeInsets.only(
+                                            right: 40,
+                                            left: index == 0 ? 20 : 0),
+                                        height:
+                                            MediaQuery.of(context).size.height -
                                                 300,
-                                            decoration: BoxDecoration(
-                                              boxShadow: activeIndex == index
-                                                  ? [
-                                                      const BoxShadow(
-                                                          color: Color.fromARGB(
-                                                              255, 36, 0, 36),
-                                                          blurRadius: 30,
-                                                          offset: Offset(4, 10))
-                                                    ]
-                                                  : [],
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(35)),
-                                              image: DecorationImage(
-                                                  image:
-                                                      NetworkImage(movie.photo),
-                                                  fit: BoxFit.cover,
-                                                  alignment:
-                                                      Alignment.topCenter),
-                                            ),
-                                            child: AnimatedContainer(
-                                              duration: const Duration(
-                                                  milliseconds: 300),
-                                              padding: const EdgeInsets.all(30),
-                                              alignment: Alignment.bottomCenter,
-                                              decoration: const BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(35)),
-                                                  gradient: LinearGradient(
-                                                      begin:
-                                                          Alignment.topCenter,
-                                                      end: Alignment
-                                                          .bottomCenter,
-                                                      colors: [
-                                                        Color.fromARGB(
-                                                            70, 66, 0, 97),
-                                                        Color.fromARGB(
-                                                            114, 19, 0, 21),
-                                                        Color.fromARGB(
-                                                            255, 19, 0, 21)
-                                                      ])),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                        decoration: BoxDecoration(
+                                          boxShadow: activeIndex == index
+                                              ? [
+                                                  const BoxShadow(
+                                                      color: Color.fromARGB(
+                                                          255, 36, 0, 36),
+                                                      blurRadius: 30,
+                                                      offset: Offset(4, 10))
+                                                ]
+                                              : [],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(35)),
+                                          image: DecorationImage(
+                                              image: NetworkImage(movie.photo),
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.topCenter),
+                                        ),
+                                        child: AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          padding: const EdgeInsets.all(30),
+                                          alignment: Alignment.bottomCenter,
+                                          decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(35)),
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color.fromARGB(
+                                                        70, 66, 0, 97),
+                                                    Color.fromARGB(
+                                                        114, 19, 0, 21),
+                                                    Color.fromARGB(
+                                                        255, 19, 0, 21)
+                                                  ])),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: isDesktop ? 300 : 100,
+                                                child: Text(
+                                                  movie.name,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                ),
+                                              ),
+                                              Row(
                                                 children: [
-                                                  SizedBox(
-                                                    width:
-                                                        isDesktop ? 300 : 100,
-                                                    child: Text(
-                                                      movie.name,
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          overflow: TextOverflow
-                                                              .ellipsis),
-                                                    ),
+                                                  Text(
+                                                    movie.language,
+                                                    style: const TextStyle(
+                                                        color: Color.fromARGB(
+                                                            73, 255, 255, 255),
+                                                        fontSize: 10),
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        movie.language,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    73,
-                                                                    255,
-                                                                    255,
-                                                                    255),
-                                                            fontSize: 10),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 7,
-                                                      ),
-                                                      Text(
-                                                        movie.year,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    73,
-                                                                    255,
-                                                                    255,
-                                                                    255),
-                                                            fontSize: 10),
-                                                      ),
-                                                    ],
+                                                  const SizedBox(
+                                                    width: 7,
                                                   ),
-                                                  SizedBox(
-                                                    height: activeIndex == index
-                                                        ? 180
-                                                        : 0,
-                                                    child: Column(
-                                                      children: [
-                                                        AnimatedContainer(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 15),
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      300),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  boxShadow:
-                                                                      activeIndex ==
-                                                                              index
-                                                                          ? [
-                                                                              const BoxShadow(blurRadius: 50, blurStyle: BlurStyle.normal, spreadRadius: 2, color: Color.fromARGB(65, 222, 0, 238))
-                                                                            ]
-                                                                          : [],
-                                                                  borderRadius:
-                                                                      const BorderRadius
-                                                                          .all(
-                                                                          Radius.circular(
-                                                                              25)),
-                                                                  gradient: const LinearGradient(
-                                                                      begin: Alignment
-                                                                          .topLeft,
-                                                                      end: Alignment.bottomRight,
-                                                                      colors: [
-                                                                        Color.fromARGB(
-                                                                            255,
-                                                                            158,
-                                                                            0,
-                                                                            164),
-                                                                        Color.fromARGB(
-                                                                            255,
-                                                                            48,
-                                                                            0,
-                                                                            63)
-                                                                      ])),
-                                                          child: InkWell(
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            25)),
-                                                            onTap: () {
-                                                              fetchContent(
-                                                                  movie);
-                                                            },
-                                                            child: Container(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              height: 70,
-                                                              color: Colors
-                                                                  .transparent,
-                                                              child:
-                                                                  const GradientText(
-                                                                "Watch Now",
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                                gradient: LinearGradient(
-                                                                    begin: Alignment
-                                                                        .topLeft,
-                                                                    end: Alignment.bottomRight,
-                                                                    colors: [
-                                                                      Color.fromARGB(
+                                                  Text(
+                                                    movie.year,
+                                                    style: const TextStyle(
+                                                        color: Color.fromARGB(
+                                                            73, 255, 255, 255),
+                                                        fontSize: 10),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: activeIndex == index
+                                                    ? 180
+                                                    : 0,
+                                                child: Column(
+                                                  children: [
+                                                    AnimatedContainer(
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 15),
+                                                      duration: const Duration(
+                                                          milliseconds: 300),
+                                                      decoration: BoxDecoration(
+                                                          boxShadow: activeIndex ==
+                                                                  index
+                                                              ? [
+                                                                  const BoxShadow(
+                                                                      blurRadius:
+                                                                          50,
+                                                                      blurStyle:
+                                                                          BlurStyle
+                                                                              .normal,
+                                                                      spreadRadius:
+                                                                          2,
+                                                                      color: Color.fromARGB(
+                                                                          65,
+                                                                          222,
+                                                                          0,
+                                                                          238))
+                                                                ]
+                                                              : [],
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          25)),
+                                                          gradient: const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                              colors: [
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    158,
+                                                                    0,
+                                                                    164),
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    48,
+                                                                    0,
+                                                                    63)
+                                                              ])),
+                                                      child: InkWell(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    25)),
+                                                        onTap: () {
+                                                          fetchContent(movie);
+                                                        },
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          height: 70,
+                                                          color: Colors
+                                                              .transparent,
+                                                          child:
+                                                              const GradientText(
+                                                            "Watch Now",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600),
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment
+                                                                    .topLeft,
+                                                                end: Alignment
+                                                                    .bottomRight,
+                                                                colors: [
+                                                                  Color
+                                                                      .fromARGB(
                                                                           255,
                                                                           254,
                                                                           245,
                                                                           255),
-                                                                      Color.fromARGB(
+                                                                  Color
+                                                                      .fromARGB(
                                                                           153,
                                                                           120,
                                                                           82,
                                                                           125)
-                                                                    ]),
-                                                              ),
-                                                            ),
+                                                                ]),
                                                           ),
                                                         ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () async {
-                                                            await removeFromWatchhList(
-                                                                movie);
-                                                            setState(() {
-                                                              watchlist =
-                                                                  getWatchhList();
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical:
-                                                                        17,
-                                                                    horizontal:
-                                                                        20),
-                                                            decoration: const BoxDecoration(
-                                                                borderRadius: BorderRadius
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await removeFromWatchhList(
+                                                            movie);
+                                                        setState(() {
+                                                          watchlist =
+                                                              getWatchhList();
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 17,
+                                                                horizontal: 20),
+                                                        decoration: const BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
                                                                     .all(Radius
                                                                         .circular(
                                                                             25)),
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    70,
+                                                                    83,
+                                                                    2,
+                                                                    117)),
+                                                        child: const Row(
+                                                          children: [
+                                                            HugeIcon(
+                                                                icon: HugeIcons
+                                                                    .strokeRoundedPlayListRemove,
                                                                 color: Color
                                                                     .fromARGB(
-                                                                        70,
-                                                                        83,
-                                                                        2,
-                                                                        117)),
-                                                            child: const Row(
-                                                              children: [
-                                                                HugeIcon(
-                                                                    icon: HugeIcons
-                                                                        .strokeRoundedPlayListRemove,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            140,
-                                                                            0,
-                                                                            175)),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                Text(
-                                                                  "Remove from Watchlist",
-                                                                  style: TextStyle(
-                                                                      color: Color.fromARGB(
+                                                                        255,
+                                                                        140,
+                                                                        0,
+                                                                        175)),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Text(
+                                                              "Remove from Watchlist",
+                                                              style: TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
                                                                           255,
                                                                           140,
                                                                           0,
                                                                           175)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
                               Positioned(
@@ -533,177 +496,209 @@ class _WatchListState extends State<WatchList> {
                               filter:
                                   ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                               child: Container(
-                                alignment: Alignment.center,
-                                color: Colors.transparent,
-                                child: const CircularProgressIndicator(
-                                  color: Color.fromARGB(255, 146, 0, 159),
-                                ),
-                              ),
+                                  alignment: Alignment.center,
+                                  color: Colors.transparent,
+                                  child: Image.asset(
+                                    "lib/assets/images/loader.gif",
+                                    width: 100,
+                                  )),
                             )
                           : const SizedBox()
-                    ])),
+                    ]),
                   )
                 : Container(
                     padding: const EdgeInsets.only(
                         top: 30, left: 20, bottom: 0, right: 20),
                     width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    height: MediaQuery.of(context).size.height,
+                    child: Stack(
                       children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "Watchlist",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Wrap(
-                          runSpacing: isDesktop ? 50 : 20,
-                          spacing: isDesktop ? 50 : 20,
-                          alignment: WrapAlignment.center,
-                          runAlignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: watchlist.map((movie) {
-                            return SizedBox(
-                              width: isDesktop
-                                  ? 350
-                                  : (MediaQuery.of(context).size.width / 2) -
-                                      30,
-                              height: 250,
-                              child: Stack(children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {});
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.only(bottom: 0),
-                                    width: isDesktop
-                                        ? 350
-                                        : (MediaQuery.of(context).size.width /
-                                                2) -
-                                            30,
-                                    height: 250,
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15)),
-                                      image: DecorationImage(
-                                          image: NetworkImage(movie.photo),
-                                          fit: BoxFit.cover,
-                                          alignment: Alignment.topCenter),
-                                    ),
-                                    child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15)),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Color.fromARGB(70, 66, 0, 97),
-                                                Color.fromARGB(255, 19, 0, 21)
-                                              ])),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  width: isDesktop ? 300 : 100,
-                                                  child: Text(
-                                                    movie.name,
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                  ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      movie.language,
-                                                      style: const TextStyle(
-                                                          color: Color.fromARGB(
-                                                              73,
-                                                              255,
-                                                              255,
-                                                              255),
-                                                          fontSize: 10),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 7,
-                                                    ),
-                                                    Text(
-                                                      movie.year,
-                                                      style: const TextStyle(
-                                                          color: Color.fromARGB(
-                                                              73,
-                                                              255,
-                                                              255,
-                                                              255),
-                                                          fontSize: 10),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    await removeFromWatchhList(movie);
-                                    List<Movie> updatedWishlist =
-                                        getWatchhList();
-                                    setState(() {
-                                      watchlist = updatedWishlist;
-                                    });
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      margin: const EdgeInsets.all(8),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              "Watchlist",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Wrap(
+                              runSpacing: isDesktop ? 50 : 20,
+                              spacing: isDesktop ? 50 : 20,
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: watchlist.map((movie) {
+                                return SizedBox(
+                                  width: isDesktop
+                                      ? 350
+                                      : (MediaQuery.of(context).size.width /
+                                              2) -
+                                          30,
+                                  height: 200,
+                                  child: Stack(children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        fetchContent(movie);
+                                      },
+                                      child: Container(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 0),
+                                        width: isDesktop
+                                            ? 350
+                                            : (MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    2) -
+                                                30,
+                                        height: 250,
+                                        decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.all(
-                                              Radius.circular(10)),
-                                          color: const Color.fromARGB(
-                                              95, 29, 0, 33),
-                                          border: Border.all(
-                                              color: const Color.fromARGB(
-                                                  255, 48, 0, 62),
-                                              width: 1)),
-                                      child: const Icon(
-                                        Icons.delete_outline_rounded,
-                                        color:
-                                            Color.fromARGB(87, 249, 131, 255),
+                                              Radius.circular(15)),
+                                          image: DecorationImage(
+                                              image: NetworkImage(movie.photo),
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.topCenter),
+                                        ),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15)),
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color.fromARGB(
+                                                        70, 66, 0, 97),
+                                                    Color.fromARGB(
+                                                        255, 19, 0, 21)
+                                                  ])),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      width:
+                                                          isDesktop ? 300 : 100,
+                                                      child: Text(
+                                                        movie.name,
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis),
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          movie.language,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          73,
+                                                                          255,
+                                                                          255,
+                                                                          255),
+                                                                  fontSize: 10),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 7,
+                                                        ),
+                                                        Text(
+                                                          movie.year,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          73,
+                                                                          255,
+                                                                          255,
+                                                                          255),
+                                                                  fontSize: 10),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ]),
-                            );
-                          }).toList(),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        await removeFromWatchhList(movie);
+                                        List<Movie> updatedWishlist =
+                                            getWatchhList();
+                                        setState(() {
+                                          watchlist = updatedWishlist;
+                                        });
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.bottomRight,
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          margin: const EdgeInsets.all(8),
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10)),
+                                              color: const Color.fromARGB(
+                                                  95, 29, 0, 33),
+                                              border: Border.all(
+                                                  color: const Color.fromARGB(
+                                                      255, 48, 0, 62),
+                                                  width: 1)),
+                                          child: const Icon(
+                                            Icons.delete_outline_rounded,
+                                            color: Color.fromARGB(
+                                                87, 249, 131, 255),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                                );
+                              }).toList(),
+                            ),
+                          ],
                         ),
+                        isLoading
+                            ? BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    color: Colors.transparent,
+                                    child: Image.asset(
+                                      "lib/assets/images/loader.gif",
+                                      width: 100,
+                                    )),
+                              )
+                            : const SizedBox()
                       ],
                     ),
                   )

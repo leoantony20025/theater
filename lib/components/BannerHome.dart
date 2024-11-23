@@ -156,7 +156,7 @@ class _BannerHomeState extends State<BannerHome> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color.fromARGB(255, 116, 0, 205),
+                        Color.fromARGB(255, 79, 0, 205),
                         Color.fromARGB(255, 165, 0, 174)
                       ])),
               const SizedBox(
@@ -255,7 +255,7 @@ class _BannerHomeState extends State<BannerHome> {
                         boxShadow: ifWatchNow
                             ? [
                                 const BoxShadow(
-                                    blurRadius: 50,
+                                    blurRadius: 30,
                                     blurStyle: BlurStyle.normal,
                                     spreadRadius: 2,
                                     color: Color.fromARGB(65, 222, 0, 238))
