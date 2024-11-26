@@ -140,7 +140,7 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                             onFocusChange: (value) {
                               setState(() {});
                             },
-                            autofocus: index == 0 ? true : false,
+                            // autofocus: index == 0 ? true : false,
                             onTap: () {
                               fetchContent(movie!);
                             },
@@ -162,7 +162,7 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                               },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                padding: const EdgeInsets.only(left: 20),
+                                padding: const EdgeInsets.only(right: 20),
                                 margin:
                                     EdgeInsets.only(left: index == 0 ? 15 : 0),
                                 width: list1FocusNodes[index].hasFocus ||

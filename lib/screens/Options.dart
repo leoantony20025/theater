@@ -70,26 +70,16 @@ class _OptionsState extends State<Options> {
         "path": "/category/hindi-movies"
       }
     ];
-    String language = languages[(lang ?? 1) - 1]['name'];
     double screenWidth = MediaQuery.of(context).size.width;
     bool isDesktop = screenWidth > 800;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.only(top: 50),
-          alignment: Alignment.topCenter,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: isDesktop ? Alignment.centerLeft : Alignment.topCenter,
-                  end: isDesktop
-                      ? Alignment.centerRight
-                      : Alignment.bottomCenter,
-                  colors: const [
-                Color.fromARGB(255, 17, 0, 17),
-                Colors.black
-              ])),
+          // padding: const EdgeInsets.only(top: 50),
+          alignment: Alignment.center,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(30),
             child: Column(

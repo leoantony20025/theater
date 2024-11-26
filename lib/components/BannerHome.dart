@@ -37,7 +37,7 @@ class _BannerHomeState extends State<BannerHome> {
     final appProvider = Provider.of<AppProvider>(context, listen: true);
     Map<String, List<Movie?>> currentContents = appProvider.currentContents;
     Random random = Random();
-    late int randomIndex = 4;
+    int randomIndex = random.nextInt(5);
     Movie? banner = currentContents['movies']?[randomIndex];
     double screenWidth = MediaQuery.of(context).size.width;
     bool isDesktop = screenWidth > 800;
@@ -79,17 +79,12 @@ class _BannerHomeState extends State<BannerHome> {
                       colors: [
                           AppColors.bg2,
                           AppColors.bg2,
-                          Color.fromARGB(27, 30, 0, 31),
+                          AppColors.bg2t,
                         ])
                   : const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                          Color.fromARGB(162, 30, 0, 31),
-                          Color.fromARGB(140, 52, 0, 56),
-                          Color.fromARGB(193, 25, 0, 23),
-                          AppColors.bg2
-                        ])),
+                      colors: [AppColors.bg2t, AppColors.bg2])),
         ),
         Container(
           width: isDesktop
@@ -103,11 +98,7 @@ class _BannerHomeState extends State<BannerHome> {
                   ? const LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [
-                          AppColors.bg2,
-                          Color.fromARGB(217, 30, 0, 31),
-                          Color.fromARGB(0, 30, 0, 31),
-                        ])
+                      colors: [AppColors.bg2, AppColors.bg2t])
                   : const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -275,7 +266,7 @@ class _BannerHomeState extends State<BannerHome> {
                       child: InkWell(
                         key: const Key("watch"),
                         focusNode: fnWatchNow,
-                        autofocus: true,
+                        // autofocus: true,
                         onFocusChange: (value) {
                           setState(() {
                             ifWatchNow = value;

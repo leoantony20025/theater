@@ -64,8 +64,8 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(
               seedColor: const Color.fromARGB(255, 26, 0, 26)),
           useMaterial3: true,
-          highlightColor: const Color.fromARGB(255, 31, 1, 46),
-          splashColor: const Color.fromARGB(255, 22, 0, 24),
+          highlightColor: const Color.fromARGB(38, 31, 1, 46),
+          splashColor: const Color.fromARGB(7, 59, 1, 103),
           scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
         ),
         debugShowCheckedModeBanner: false,

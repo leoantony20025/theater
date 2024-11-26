@@ -26,6 +26,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController textEditingController = TextEditingController();
   bool isLoading = false;
+  bool isError = false;
   String word = "";
   final ScrollController scrollController = ScrollController();
   bool isRequestSearch = false;
@@ -46,15 +47,6 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
     focusNodes = List.generate(50, (index) => FocusNode());
     fnSearch = FocusNode();
-    // fnSearch.addListener(() {
-    //   if (fnSearch.hasFocus) {
-    //     SystemChannels.textInput
-    //         .invokeMethod('TextInput.show'); // Show keyboard
-    //   } else {
-    //     SystemChannels.textInput
-    //         .invokeMethod('TextInput.hide'); // Hide keyboard
-    //   }
-    // });
   }
 
   @override
@@ -132,32 +124,44 @@ class _SearchScreenState extends State<SearchScreen> {
 
     search() async {
       setIsLoading(true);
-      List<Movie?> content = await fetchSearchContents(word);
-      if (content.isNotEmpty) {
+      setState(() {
+        isError = false;
+      });
+      List<Movie?>? content = await fetchSearchContents(word);
+      if (content != null) {
+        if (content.isNotEmpty) {
+          setState(() {
+            searchContents = content;
+          });
+        } else {
+          setState(() {
+            isError = true;
+          });
+        }
+      } else {
         setState(() {
-          searchContents = content;
+          isError = true;
         });
       }
       setIsLoading(false);
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg3,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(
-                gradient:
-                    LinearGradient(colors: [AppColors.bg2, AppColors.bg3])),
             child: FocusTraversalGroup(
               policy: OrderedTraversalPolicy(),
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 controller: scrollController,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Focus(
                       focusNode: fnSearch,
@@ -170,7 +174,12 @@ class _SearchScreenState extends State<SearchScreen> {
                         if (event is KeyDownEvent) {
                           if (event.logicalKey == LogicalKeyboardKey.select ||
                               event.logicalKey == LogicalKeyboardKey.enter) {
-                            fnSearch.requestFocus();
+                            setState(() {
+                              isRequestSearch = false;
+                              word = textEditingController.text;
+                            });
+                            FocusScope.of(context).unfocus();
+                            search();
                             return KeyEventResult.handled;
                           }
                           if (event.logicalKey == LogicalKeyboardKey.goBack) {
@@ -191,16 +200,32 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: const SizedBox(),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.5,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width:
+                          isDesktop ? 300 : MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.all(30),
                       height: 50,
                       decoration: BoxDecoration(
-                        color: fnSearch.hasFocus
-                            ? const Color.fromARGB(255, 46, 1, 46)
-                            : AppColors.bg1,
+                        gradient: fnSearch.hasFocus
+                            ? const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                    Color.fromARGB(255, 51, 1, 92),
+                                    Color.fromARGB(255, 48, 0, 63)
+                                  ])
+                            : const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                    Color.fromARGB(176, 37, 0, 63),
+                                    Color.fromARGB(175, 48, 0, 63)
+                                  ]),
                         border: fnSearch.hasFocus
-                            ? Border.all(color: AppColors.borderTV, width: 2)
+                            ? Border.all(
+                                color: const Color.fromARGB(255, 134, 2, 190),
+                                width: 2)
                             : Border.all(color: AppColors.bg1, width: 1),
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -247,164 +272,208 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                     ),
-                    Focus(
-                      skipTraversal: true,
-                      onFocusChange: (value) {
-                        if (value) {
-                          scrollToSection(0);
-                        }
-                      },
-                      child:
-                          latestContents.isNotEmpty || searchContents.isNotEmpty
-                              ? BannerSearch(
-                                  fetchContent: fetchContent,
-                                  movie: searchContents.isNotEmpty
-                                      ? searchContents[0]
-                                      : latestContents['movies']![0],
-                                )
-                              : const SizedBox(),
-                    ),
-                    searchContents.isEmpty &
-                            latestContents['movies']!.isNotEmpty
+                    !isError && latestContents.isNotEmpty
                         ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 20),
-                                child: Text(
-                                  "Latest Movies",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 20),
-                                ),
+                              Focus(
+                                skipTraversal: true,
+                                onFocusChange: (value) {
+                                  if (value) {
+                                    scrollToSection(0);
+                                  }
+                                },
+                                child: latestContents.isNotEmpty ||
+                                        searchContents.isNotEmpty
+                                    ? BannerSearch(
+                                        fetchContent: fetchContent,
+                                        movie: searchContents.isNotEmpty
+                                            ? searchContents[0]
+                                            : latestContents['movies']![0],
+                                      )
+                                    : const SizedBox(),
                               ),
-                              HorizontalScrollList(
-                                currentContents: latestContents['movies']!,
-                                isLoading: isLoading,
-                                setIsLoading: setIsLoading,
-                              ),
-                            ],
-                          )
-                        : const SizedBox(),
-                    // searchContents.isEmpty & latestContents['series']!.isNotEmpty
-                    //     ? Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //         children: [
-                    //           const Padding(
-                    //             padding: EdgeInsets.symmetric(
-                    //                 horizontal: 20, vertical: 20),
-                    //             child: Text(
-                    //               "Latest Series",
-                    //               style: TextStyle(
-                    //                   color: Colors.white,
-                    //                   fontWeight: FontWeight.w500,
-                    //                   fontSize: 20),
-                    //             ),
-                    //           ),
-                    //           HorizontalScrollList(
-                    //             currentContents: latestContents['series']!,
-                    //             isLoading: isLoading,
-                    //             setIsLoading: setIsLoading,
-                    //           ),
-                    //         ],
-                    //       )
-                    //     : const SizedBox(),
-                    searchContents.isNotEmpty
-                        ? FocusTraversalGroup(
-                            policy: ReadingOrderTraversalPolicy(),
-                            child: Focus(
-                              skipTraversal: true,
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 50, horizontal: 20),
-                                child: Wrap(
-                                  spacing: 20,
-                                  runSpacing: 20,
-                                  children: searchContents
-                                      .asMap()
-                                      .entries
-                                      .map((movie) {
-                                    return Focus(
-                                      canRequestFocus: true,
-                                      focusNode: focusNodes[movie.key],
-                                      onFocusChange: (value) {
-                                        setState(() {});
-                                      },
-                                      child: InkWell(
-                                        canRequestFocus: true,
+                              searchContents.isEmpty &
+                                      latestContents['movies']!.isNotEmpty
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 20),
+                                          child: Text(
+                                            "Latest Movies",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 20),
+                                          ),
+                                        ),
+                                        HorizontalScrollList(
+                                          currentContents:
+                                              latestContents['movies']!,
+                                          isLoading: isLoading,
+                                          setIsLoading: setIsLoading,
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox(),
+                              // searchContents.isEmpty & latestContents['series']!.isNotEmpty
+                              //     ? Column(
+                              //         crossAxisAlignment: CrossAxisAlignment.start,
+                              //         children: [
+                              //           const Padding(
+                              //             padding: EdgeInsets.symmetric(
+                              //                 horizontal: 20, vertical: 20),
+                              //             child: Text(
+                              //               "Latest Series",
+                              //               style: TextStyle(
+                              //                   color: Colors.white,
+                              //                   fontWeight: FontWeight.w500,
+                              //                   fontSize: 20),
+                              //             ),
+                              //           ),
+                              //           HorizontalScrollList(
+                              //             currentContents: latestContents['series']!,
+                              //             isLoading: isLoading,
+                              //             setIsLoading: setIsLoading,
+                              //           ),
+                              //         ],
+                              //       )
+                              //     : const SizedBox(),
+                              searchContents.isNotEmpty
+                                  ? FocusTraversalGroup(
+                                      policy: ReadingOrderTraversalPolicy(),
+                                      child: Focus(
+                                        skipTraversal: true,
                                         child: Container(
-                                          width: 150,
-                                          height: 250,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              border: focusNodes[movie.key]
-                                                      .hasFocus
-                                                  ? Border.all(
-                                                      color: AppColors.borderTV,
-                                                      width: 3)
-                                                  : Border.all(
-                                                      width: 0,
-                                                      color:
-                                                          Colors.transparent)),
-                                          child: CachedNetworkImage(
-                                            imageUrl: movie.value?.photo ?? "",
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  Radius.circular(20),
+                                          alignment: Alignment.center,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 50),
+                                          child: Wrap(
+                                            spacing: 10,
+                                            runSpacing: 10,
+                                            children: searchContents
+                                                .asMap()
+                                                .entries
+                                                .map((movie) {
+                                              return Focus(
+                                                canRequestFocus: true,
+                                                focusNode:
+                                                    focusNodes[movie.key],
+                                                onFocusChange: (value) {
+                                                  setState(() {});
+                                                },
+                                                child: InkWell(
+                                                  canRequestFocus: true,
+                                                  child: Container(
+                                                    width:
+                                                        isDesktop ? 240 : 150,
+                                                    height:
+                                                        isDesktop ? 300 : 200,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        border: focusNodes[
+                                                                    movie.key]
+                                                                .hasFocus
+                                                            ? Border.all(
+                                                                color: AppColors
+                                                                    .borderTV,
+                                                                width: 3)
+                                                            : Border.all(
+                                                                width: 0,
+                                                                color: Colors
+                                                                    .transparent)),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          movie.value?.photo ??
+                                                              "",
+                                                      imageBuilder: (context,
+                                                              imageProvider) =>
+                                                          Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(20),
+                                                          ),
+                                                          image:
+                                                              DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          Shimmer.fromColors(
+                                                        direction:
+                                                            ShimmerDirection
+                                                                .ltr,
+                                                        enabled: true,
+                                                        loop: 5,
+                                                        baseColor: const Color
+                                                            .fromARGB(
+                                                            71, 224, 224, 224),
+                                                        highlightColor:
+                                                            const Color
+                                                                .fromARGB(70,
+                                                                245, 245, 245),
+                                                        child: Container(
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height /
+                                                              1.7,
+                                                          color: const Color
+                                                              .fromARGB(
+                                                              255, 0, 0, 0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                Shimmer.fromColors(
-                                              direction: ShimmerDirection.ltr,
-                                              enabled: true,
-                                              loop: 5,
-                                              baseColor: const Color.fromARGB(
-                                                  71, 224, 224, 224),
-                                              highlightColor:
-                                                  const Color.fromARGB(
-                                                      70, 245, 245, 245),
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    1.7,
-                                                color: const Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                              ),
-                                            ),
+                                              );
+                                            }).toList(),
                                           ),
                                         ),
                                       ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
+                                    )
+                                  : const SizedBox(),
+                            ],
                           )
-                        : const SizedBox(),
+                        : Container(
+                            height: MediaQuery.of(context).size.height - 200,
+                            alignment: Alignment.center,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset("lib/assets/images/wish.png"),
+                                  const Text(
+                                    "Found no movies!",
+                                    style: TextStyle(color: Colors.white24),
+                                  )
+                                ]),
+                          )
                   ],
                 ),
               ),
             ),
           ),
-          isLoading
+          isLoading || latestContents.isEmpty
               ? BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                   child: Container(

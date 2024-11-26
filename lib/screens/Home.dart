@@ -25,8 +25,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
-  Random random = Random();
-  late int randomIndex = 4;
   final ScrollController scrollController = ScrollController();
   late FocusNode fnAll;
 
@@ -41,8 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     fnAll = FocusNode();
-    randomIndex = random.nextInt(4);
-
     super.initState();
   }
 
@@ -180,7 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 Container(
                                   alignment: Alignment.centerRight,
-                                  margin: EdgeInsets.symmetric(horizontal: 30),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: isDesktop ? 20 : 10),
                                   child: Focus(
                                     focusNode: fnAll,
                                     onFocusChange: (value) {

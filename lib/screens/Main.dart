@@ -22,6 +22,7 @@ class _MainState extends State<Main> {
   int currentIndex = 0;
   List<Movie> wishList = [];
   late List<FocusNode> focusNodes;
+  int activeIndex = -1;
 
   @override
   void initState() {
@@ -102,8 +103,7 @@ class _MainState extends State<Main> {
       bottomNavigationBar: MediaQuery.of(context).size.width < 800
           ? Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 10),
-              height: 91,
+              height: 75,
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color.fromARGB(41, 25, 1, 31),
@@ -119,7 +119,7 @@ class _MainState extends State<Main> {
                 unselectedItemColor: const Color.fromARGB(90, 219, 186, 232),
                 selectedItemColor: Colors.white,
                 elevation: 20,
-                iconSize: 20,
+                iconSize: 18,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
                 items: const [
@@ -168,22 +168,13 @@ class _MainState extends State<Main> {
           if (constraints.maxWidth > 800) {
             return Row(
               children: [
-                Container(
+                SizedBox(
                   width: 100,
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                        AppColors.bg1,
-                        AppColors.bg2,
-                      ])),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: deskTopMenu.map((e) {
                       int index = deskTopMenu.indexOf(e);
-
                       return InkWell(
                         focusNode: focusNodes[index],
                         onFocusChange: (value) {
@@ -199,41 +190,65 @@ class _MainState extends State<Main> {
                             currentIndex = index;
                           });
                         },
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          margin: const EdgeInsets.symmetric(vertical: 15),
-                          alignment: Alignment.center,
-                          decoration: currentIndex == index
-                              ? BoxDecoration(
-                                  border: focusNodes[index].hasFocus
-                                      ? Border.all(
-                                          color: AppColors.borderTV, width: 2)
-                                      : Border.all(
-                                          width: 0, color: Colors.transparent),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(80)),
-                                  gradient: const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color.fromARGB(60, 81, 0, 118),
-                                        Color.fromARGB(59, 115, 0, 113)
-                                      ]))
-                              : BoxDecoration(
-                                  border: focusNodes[index].hasFocus
-                                      ? Border.all(
-                                          color: AppColors.borderTV, width: 2)
-                                      : Border.all(
-                                          width: 0, color: Colors.transparent),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(80)),
-                                ),
-                          child: HugeIcon(
-                              icon: e['icon'] as IconData,
-                              color: currentIndex == index
-                                  ? Colors.white
-                                  : const Color.fromARGB(93, 217, 4, 228)),
+                        child: MouseRegion(
+                          onEnter: (event) {
+                            setState(() {
+                              activeIndex = index;
+                            });
+                          },
+                          onExit: (event) {
+                            setState(() {
+                              activeIndex = -1;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: 60,
+                            height: 60,
+                            margin: const EdgeInsets.symmetric(vertical: 15),
+                            alignment: Alignment.center,
+                            decoration: currentIndex == index
+                                ? BoxDecoration(
+                                    border: focusNodes[index].hasFocus
+                                        ? Border.all(
+                                            color: AppColors.borderTV, width: 2)
+                                        : Border.all(
+                                            width: 0,
+                                            color: Colors.transparent),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(80)),
+                                    gradient: const LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color.fromARGB(229, 65, 1, 133),
+                                          Color.fromARGB(84, 107, 0, 115)
+                                        ]))
+                                : BoxDecoration(
+                                    gradient: activeIndex == index
+                                        ? const LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                                Color.fromARGB(106, 35, 0, 72),
+                                                Color.fromARGB(120, 72, 1, 77)
+                                              ])
+                                        : null,
+                                    border: focusNodes[index].hasFocus
+                                        ? Border.all(
+                                            color: AppColors.borderTV, width: 2)
+                                        : Border.all(
+                                            width: 0,
+                                            color: Colors.transparent),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(80)),
+                                  ),
+                            child: HugeIcon(
+                                icon: e['icon'] as IconData,
+                                color: currentIndex == index
+                                    ? Colors.white
+                                    : const Color.fromARGB(93, 217, 4, 228)),
+                          ),
                         ),
                       );
                     }).toList(),

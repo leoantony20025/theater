@@ -171,69 +171,41 @@ class _WatchListTVState extends State<WatchListTV> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                          gradient: isDesktop
-                              ? const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                      AppColors.bg2,
-                                      AppColors.bg2,
-                                      Color.fromARGB(27, 30, 0, 31),
-                                    ])
-                              : const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                      Color.fromARGB(162, 30, 0, 31),
-                                      Color.fromARGB(140, 52, 0, 56),
-                                      Color.fromARGB(193, 25, 0, 23),
-                                      AppColors.bg2
-                                    ])),
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                            AppColors.bg2,
+                            AppColors.bg2,
+                            AppColors.bg2t,
+                          ])),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 2,
                       height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                          gradient: isDesktop
-                              ? const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                      AppColors.bg2,
-                                      Color.fromARGB(217, 30, 0, 31),
-                                      Color.fromARGB(0, 30, 0, 31),
-                                    ])
-                              : const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                      Color.fromARGB(162, 30, 0, 31),
-                                      Color.fromARGB(140, 52, 0, 56),
-                                      Color.fromARGB(233, 25, 0, 23),
-                                      AppColors.bg2
-                                    ])),
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                            AppColors.bg2,
+                            Color.fromARGB(195, 13, 0, 19),
+                            AppColors.bg2t,
+                          ])),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                          gradient: isDesktop
-                              ? const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                      Color.fromARGB(71, 17, 0, 17),
-                                      Color.fromARGB(192, 17, 0, 17),
-                                      AppColors.bg2,
-                                    ])
-                              : const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                      Color.fromARGB(0, 17, 0, 17),
-                                      AppColors.bg2,
-                                    ])),
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                            AppColors.bg2t,
+                            Color.fromARGB(242, 13, 0, 19),
+                            AppColors.bg2,
+                          ])),
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
@@ -275,7 +247,7 @@ class _WatchListTVState extends State<WatchListTV> {
                                                 ? [
                                                     const BoxShadow(
                                                         color: Color.fromARGB(
-                                                            255, 36, 0, 36),
+                                                            56, 36, 0, 36),
                                                         blurRadius: 30,
                                                         offset: Offset(4, 10))
                                                   ]
@@ -391,7 +363,7 @@ class _WatchListTVState extends State<WatchListTV> {
                                                                     ? [
                                                                         const BoxShadow(
                                                                             blurRadius:
-                                                                                50,
+                                                                                30,
                                                                             blurStyle: BlurStyle
                                                                                 .normal,
                                                                             spreadRadius:

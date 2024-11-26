@@ -38,11 +38,9 @@ class _BannerSearchState extends State<BannerSearch> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      width: isDesktop
-          ? MediaQuery.of(context).size.width / 1.25
-          : MediaQuery.of(context).size.width - 40,
+      width: MediaQuery.of(context).size.width,
       height: isDesktop ? 400 : 300,
-      margin: EdgeInsets.symmetric(vertical: isDesktop ? 60 : 30),
+      margin: const EdgeInsets.all(20),
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
           boxShadow: ifWatchNow
@@ -56,10 +54,17 @@ class _BannerSearchState extends State<BannerSearch> {
               : [],
           borderRadius: BorderRadius.circular(50),
           border:
-              Border.all(width: 3, color: const Color.fromARGB(79, 48, 2, 48))),
+              Border.all(width: 0, color: const Color.fromARGB(79, 48, 2, 48))),
       child: Stack(
         alignment: Alignment.centerRight,
         children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: isDesktop
+                ? MediaQuery.of(context).size.height / 1.3
+                : MediaQuery.of(context).size.height / 1.7,
+            color: AppColors.bg3,
+          ),
           CachedNetworkImage(
             imageUrl: widget.movie?.photo ?? "",
             width: isDesktop
@@ -90,11 +95,7 @@ class _BannerSearchState extends State<BannerSearch> {
                     ? const LinearGradient(
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
-                        colors: [
-                            Color.fromARGB(255, 22, 0, 23),
-                            Color.fromARGB(210, 11, 0, 11),
-                            Color.fromARGB(0, 0, 0, 0),
-                          ])
+                        colors: [AppColors.bg3, AppColors.bg4])
                     : const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -115,11 +116,7 @@ class _BannerSearchState extends State<BannerSearch> {
                     ? const LinearGradient(
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
-                        colors: [
-                            AppColors.bg1,
-                            Color.fromARGB(168, 9, 0, 10),
-                            Color.fromARGB(0, 13, 0, 13),
-                          ])
+                        colors: [AppColors.bg3, AppColors.bg4])
                     : const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -132,7 +129,7 @@ class _BannerSearchState extends State<BannerSearch> {
           ),
           Container(
             width: isDesktop
-                ? MediaQuery.of(context).size.width / 2 + 40
+                ? MediaQuery.of(context).size.width / 2
                 : MediaQuery.of(context).size.width - 40,
             height: isDesktop
                 ? MediaQuery.of(context).size.height / 1.3
@@ -142,10 +139,7 @@ class _BannerSearchState extends State<BannerSearch> {
                     ? const LinearGradient(
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
-                        colors: [
-                            Color.fromARGB(255, 16, 0, 17),
-                            Color.fromARGB(0, 12, 0, 12),
-                          ])
+                        colors: [AppColors.bg3, AppColors.bg4])
                     : const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -166,8 +160,9 @@ class _BannerSearchState extends State<BannerSearch> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                            Color.fromARGB(0, 7, 0, 7),
-                            AppColors.bg1,
+                            Colors.transparent,
+                            AppColors.bg4,
+                            AppColors.bg3,
                           ])
                     : const LinearGradient(
                         begin: Alignment.topCenter,
@@ -312,7 +307,7 @@ class _BannerSearchState extends State<BannerSearch> {
                         child: InkWell(
                           key: const Key("watch"),
                           focusNode: fnWatchNow,
-                          autofocus: true,
+                          // autofocus: true,
                           onFocusChange: (value) {
                             setState(() {
                               ifWatchNow = value;
