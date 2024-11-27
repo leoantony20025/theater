@@ -65,6 +65,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final appProvider = Provider.of<AppProvider>(context, listen: true);
     Map<String, List<Movie?>> latestContents = appProvider.latestContents;
+    if (latestContents['movies'] != null) {
+      if (latestContents['movies']!.length > 20) {
+        latestContents['movies']!.removeWhere((i) => i?.description == "d");
+      }
+    }
 
     void setIsLoading(bool load) {
       setState(() {
@@ -263,7 +268,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           fontSize: 16,
                         ),
                         decoration: const InputDecoration(
-                          hintText: "Find your movies...",
+                          hintText: "Search movies...",
                           hintStyle: TextStyle(
                               color: Color.fromARGB(57, 158, 158, 158)),
                           contentPadding:
@@ -452,6 +457,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                       ),
                                     )
                                   : const SizedBox(),
+
+                              const SizedBox(
+                                height: 100,
+                              )
                             ],
                           )
                         : Container(

@@ -84,10 +84,10 @@ Future<Map<String, List<Movie?>>> fetchContents(int lang) async {
 }
 
 Future<Map<String, List<Movie?>>> fetchLatestContents() async {
-  final res = await dio.get(baseUrl);
+  final res = await dio.get('$baseUrl/?s=&tr_post_type=1');
 
   var document = HtmlParser(res.data).parse();
-  var ul = document.querySelectorAll('.MovieList li');
+  var ul = document.querySelectorAll('ul.MovieList li');
   List<Movie> movies = [];
 
   for (var li in ul) {

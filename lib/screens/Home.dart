@@ -121,8 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
           alignment: Alignment.center,
           color: AppColors.bg2,
           child: currentContents.isEmpty
-              ? const CircularProgressIndicator(
-                  color: Color.fromARGB(255, 123, 2, 154))
+              ? Image.asset(
+                  "lib/assets/images/loader.gif",
+                  width: 100,
+                )
               : ScrollConfiguration(
                   behavior: NoScrollBehavior(),
                   child: Scrollbar(
